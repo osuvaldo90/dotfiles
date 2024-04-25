@@ -103,10 +103,64 @@ source $ZSH/oh-my-zsh.sh
 alias co='git checkout'
 alias st='git status -s'
 alias lg="git log --graph --abbrev-commit --date=short --pretty=format:'%C(yellow)%h%Creset %C(white)%s %Cgreen%ar%Creset by %C(bold blue)%an%Creset%C(yellow)%d'"
+alias lgf="lg --first-parent"
 alias fh="git add . && git commit --amend --no-edit"
 alias pu='git push --set-upstream origin'
 alias pf='git push --force-with-lease'
 alias pl='git pull --rebase'
+alias cf='git commit --fixup'
+
+function stash() {
+  stash_count=$(git stash list | wc -l)
+  git stash -u
+  return $stash_count
+}
+
+function unstash() {
+  if [ $1 -ne $(git stash list | wc -l) ]; then
+    git stash pop
+  fi
+}
+
+function ub_internal () {
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  update_branch=$1
+  git checkout $update_branch
+  git pull --rebase
+  git checkout $current_branch
+}
+
+# update some other branch
+function ub () {
+  stash
+  stash_count=$?
+
+  ub_internal $1  
+
+  unstash $stash_count
+}
+
+# update a base branch and rebase against that branch
+function re () {
+  stash
+  stash_count=$?
+
+  ub_internal $1
+  git rebase $update_branch
+
+  unstash $stash_count
+}
+
+# update a base branch and rebase (interactively) against that branch
+function rei () {
+  stash
+  stash_count=$?
+
+  ub_internal $1
+  git rebase -i $update_branch
+
+  unstash $stash_count
+}
 
 alias wt='npx jest --watch'
 
