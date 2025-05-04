@@ -8,7 +8,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="intheloop"
+if [[ "${ZSH_THEME}" = '' ]]; then
+  ZSH_THEME="intheloop"
+fi
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -70,7 +72,7 @@ ZSH_THEME="intheloop"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(autojump git docker-compose nvm)
+plugins=(autojump git docker-compose nvm gh encode64)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -101,14 +103,34 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias co='git checkout'
+alias com='git checkout $(git rev-parse --abbrev-ref origin/HEAD | sed "s#^origin/##")'
 alias st='git status -s'
-alias lg="git log --graph --abbrev-commit --date=short --pretty=format:'%C(yellow)%h%Creset %C(white)%s %Cgreen%ar%Creset by %C(bold blue)%an%Creset%C(yellow)%d'"
+#alias lg="git log --graph --abbrev-commit --date=short --pretty=format:'%C(bold blue)%s %C(yellow)%h%Creset%nby %C(bold blue)%an%Creset %Cgreen%ar%Creset%C(magenta)%d%n'"
+alias lg_base="git log --graph --abbrev-commit --pretty=format:'%C(bold magenta)%s%Creset %C(dim white)%h%Creset%n%C(yellow)%ad%Creset %C(dim white)by%Creset %C(green)%an%n%(decorate:separator=%n- ,suffix=,prefix=- )%n'"
+alias lg="lg_base --date=relative"
 alias lgf="lg --first-parent"
-alias fh="git add . && git commit --amend --no-edit"
+alias lgb='lg $(git rev-parse --abbrev-ref origin/HEAD)~..HEAD'
+alias lgd='lg_base --date=local'
+alias lgt="tv git-log"
+alias fh="git commit --amend --no-edit"
 alias pu='git push --set-upstream origin'
 alias pf='git push --force-with-lease'
-alias pl='git pull --rebase'
+# alias pl='git pull --rebase'
 alias cf='git commit --fixup'
+alias cotmp='git branch -D tmp; git checkout -b tmp'
+alias 'ga.'='git add .'
+
+unalias gsts
+function gsts() {
+  if [ -z "$1" ]; then
+    git stash show -p stash@{0}
+    git show -p stash@{0}^3
+  else
+    git stash show -p $1
+    git show -p $1^3
+  fi
+  
+}
 
 function stash() {
   stash_count=$(git stash list | wc -l)
@@ -120,6 +142,13 @@ function unstash() {
   if [ $1 -ne $(git stash list | wc -l) ]; then
     git stash pop
   fi
+}
+
+function pl() {
+  stash
+  stash_count=$?
+  git pull --rebase
+  unstash $stash_count
 }
 
 function ub_internal () {
@@ -146,7 +175,27 @@ function re () {
   stash_count=$?
 
   ub_internal $1
-  git rebase $update_branch
+  git rebase $1
+
+  unstash $stash_count
+}
+
+function re_remote () {
+  stash
+  stash_count=$?
+
+  git fetch origin $1
+  git rebase $1
+
+  unstash $stash_count
+}
+
+function reo () {
+  stash
+  stash_count=$?
+
+  ub_internal $1
+  git rebase --onto $1 $2
 
   unstash $stash_count
 }
@@ -161,6 +210,42 @@ function rei () {
 
   unstash $stash_count
 }
+
+alias newpr='re $(git rev-parse --abbrev-ref origin/HEAD) && pu && gh pr create'
+alias rem='re_remote $(git rev-parse --abbrev-ref origin/HEAD | sed "s#^origin/##")'
+alias reom='reo $(git rev-parse --abbrev-ref origin/HEAD)'
+alias rpf='rem && pf'
+alias frpf='fh && rem && pf'
+
+# stack-pr
+alias sp='stack-pr'
+alias spv='stack-pr view'
+# alias spx='stack-pr export'
+function spx() {
+  stash
+  stash_count=$?
+
+  stack-pr export
+
+  unstash $stash_count
+}
+# alias spl='stack-pr land'
+function spl() {
+  stash
+  stash_count=$?
+
+  stack-pr land
+
+  unstash $stash_count
+}
+
+alias spa='stack-pr abandon'
+
+# git-pile
+alias gsp='git submitpr'
+alias ghp='git headpr --squash'
+unalias gap
+alias gap='git absorb'
 
 alias wt='npx jest --watch'
 
