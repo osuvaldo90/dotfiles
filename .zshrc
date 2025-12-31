@@ -72,7 +72,7 @@ fi
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(autojump git docker-compose nvm gh encode64)
+# plugins=(autojump git docker-compose nvm gh encode64)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -243,11 +243,26 @@ alias spa='stack-pr abandon'
 
 # git-pile
 alias gsp='git submitpr'
-alias ghp='git headpr --squash'
+alias ghp='git headpr'
 unalias gap
 alias gap='git absorb'
 
+# git town
+unalias gts
+alias gs='git town sync --no-push'
+alias gsr='git town sync'
+alias gsa='git town sync --all --no-push'
+alias gsar='git town sync --all'
+alias ft='git town hack'
+alias pr='git town propose'
+alias ap='git town append'
+alias sw='git town switch'
+alias gtc='git town continue'
+alias gts='git town skip'
+
 alias wt='npx jest --watch'
+
+alias nu='nvm use'
 
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
