@@ -55,6 +55,9 @@ if ! command -v git-town >/dev/null 2>&1; then
 else
   echo "git-town already installed"
 fi
+git config --global git-town.github-connector gh
+git config --global git-town.sync-feature-strategy rebase
+git config --global git-town.sync-tags false
 
 # --------------------------
 # Link $HOME/.zshrc to ./zsh/.zshrc
