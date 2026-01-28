@@ -22,6 +22,7 @@ alias frpf='fh && rem && pf'
 
 # git town
 unalias gts
+alias gt='git town'
 alias gs='git town sync --no-push'
 alias gsr='git town sync'
 alias gsa='git town sync --all --no-push'
