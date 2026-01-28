@@ -31,7 +31,6 @@ fi
 
 # create symlink for theme (force, but idempotent)
 ln -sf "$spaceship_dir/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-sed -i.bak.1-theme 's/^ZSH_THEME=.*$/ZSH_THEME="spaceship"/' $HOME/.zshrc
 
 # --------------------------
 # zsh-autosuggestions
@@ -57,33 +56,20 @@ else
   echo "git-town already installed"
 fi
 
-# configure OMZ plugins
-sed -i.bak.plugins 's/^plugins=.*$/plugins=(git gh encode64 zsh-autosuggestions)/' $HOME/.zshrc
+# --------------------------
+# Link $HOME/.zshrc to ./zsh/.zshrc
+# --------------------------
+zshrc_src="$script_dir/zsh/.zshrc"
+zshrc_dest="$HOME/.zshrc"
 
-# enable aliases and functions
-ensure_source_once() {
-  local target="$1"
-  local src_line="source $target"
-  if ! grep -Fxq "$src_line" "$HOME/.zshrc"; then
-    echo "$src_line" >> $HOME/.zshrc
-    echo "added: $src_line"
-  else
-    echo "already sources: $target"
-  fi
-}
+if [[ -f "$zshrc_dest" && ! -L "$zshrc_dest" ]]; then
+  # Backup existing .zshrc if it's not already a symlink
+  backup_file="$zshrc_dest.backup.$(date +%s)"
+  echo "backing up existing .zshrc to $backup_file"
+  mv "$zshrc_dest" "$backup_file"
+fi
 
-ensure_source_once "$script_dir/zsh/aliases.zsh"
-ensure_source_once "$script_dir/zsh/exports.zsh"
-ensure_source_once "$script_dir/zsh/functions.zsh"
+# Create symlink (force, but idempotent)
+ln -sf "$zshrc_src" "$zshrc_dest"
+echo "linked $zshrc_src to $zshrc_dest"
 
-ensure_path_once() {
-  local path_dir="$1"
-  if [[ ":$PATH:" != *":$path_dir:"* ]]; then
-    echo "export PATH=\"$path_dir:\$PATH\"" >> "$HOME/.zshrc"
-    echo "added $path_dir to PATH"
-  else
-    echo "$path_dir already in PATH"
-  fi
-}
-
-ensure_path_once "$HOME/.local/bin"
