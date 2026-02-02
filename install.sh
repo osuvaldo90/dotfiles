@@ -5,9 +5,6 @@ set -o pipefail
 script_dir=$(dirname "$(readlink -f "$0")")
 echo "script_dir=$script_dir"
 
-ZSH_CUSTOM=${ZSH_CUSTOM:-"$HOME/.oh-my-zsh/custom"}
-mkdir -p "$ZSH_CUSTOM/themes" "$ZSH_CUSTOM/plugins"
-
 if [[ "${IS_ON_ONA:-false}" = "true" ]]; then
   # ensure zsh is used in all sessions
   echo "detecting Ona environment; setting zsh as default shell"
@@ -15,6 +12,19 @@ if [[ "${IS_ON_ONA:-false}" = "true" ]]; then
 else
   # TODO Ona has Oh My Zsh pre-installed. If not, install and set up OMZ
 fi
+
+# --------------------------
+# oh-my-zsh install (skip if present)
+# --------------------------
+if [[ ! -e "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
+  echo "installing oh-my-zsh"
+  RUNZSH=no KEEP_ZSHRC=no CHSH=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+  echo "oh-my-zsh already installed"
+fi
+
+ZSH_CUSTOM=${ZSH_CUSTOM:-"$HOME/.oh-my-zsh/custom"}
+mkdir -p "$ZSH_CUSTOM/themes" "$ZSH_CUSTOM/plugins"
 
 # --------------------------
 # spaceship prompt (clone or update)
