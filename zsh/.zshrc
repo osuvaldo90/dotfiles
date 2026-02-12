@@ -14,9 +14,6 @@ source "$zsh_files_dir/aliases.zsh"
 source "$zsh_files_dir/exports.zsh"
 source "$zsh_files_dir/functions.zsh"
 
-# source Ona secrets if present
-[ -f /etc/profile.d/ona-secrets.sh ] && . /etc/profile.d/ona-secrets.sh
-
 if [[ -f "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"
 fi
