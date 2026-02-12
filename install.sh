@@ -5,12 +5,10 @@ set -o pipefail
 script_dir=$(dirname "$(readlink -f "$0")")
 echo "script_dir=$script_dir"
 
-if [[ "${IS_ON_ONA:-false}" = "true" ]]; then
-  # ensure zsh is used in all sessions
-  echo "detecting Ona environment; setting zsh as default shell"
-  sudo chsh "$(id -un)" --shell "/usr/bin/zsh"
-else
-  # TODO Ona has Oh My Zsh pre-installed. If not, install and set up OMZ
+# ensure zsh is the default shell
+if [[ "$SHELL" != */zsh ]]; then
+  echo "setting zsh as default shell"
+  chsh -s "$(which zsh)"
 fi
 
 # --------------------------
