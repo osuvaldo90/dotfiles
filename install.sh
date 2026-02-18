@@ -5,12 +5,6 @@ set -o pipefail
 script_dir=$(dirname "$(readlink -f "$0")")
 echo "script_dir=$script_dir"
 
-# ensure zsh is the default shell
-if [[ "$SHELL" != */zsh ]]; then
-  echo "setting zsh as default shell"
-  chsh -s "$(which zsh)"
-fi
-
 # --------------------------
 # oh-my-zsh install (skip if present)
 # --------------------------
