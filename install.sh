@@ -13,6 +13,7 @@ if [[ ! -e "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]]; then
   RUNZSH=no KEEP_ZSHRC=no CHSH=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 else
   echo "oh-my-zsh already installed"
+  omz update
 fi
 
 ZSH_CUSTOM=${ZSH_CUSTOM:-"$HOME/.oh-my-zsh/custom"}
