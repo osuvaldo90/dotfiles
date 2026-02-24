@@ -33,6 +33,7 @@ alias ap='git town append'
 alias sw='git town switch'
 alias gtc='git town continue'
 alias gts='git town skip'
+alias gtb='git town branch'
 
 alias dc='docker compose'
 alias dcu='docker compose up'
