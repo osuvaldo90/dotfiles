@@ -68,6 +68,21 @@ git config --global git-town.sync-tags false
 "$script_dir/neovim/install.sh"
 
 # --------------------------
+# Link $HOME/.tmux.conf to ./tmux/.tmux.conf
+# --------------------------
+tmux_src="$script_dir/tmux/.tmux.conf"
+tmux_dest="$HOME/.tmux.conf"
+
+if [[ -f "$tmux_dest" && ! -L "$tmux_dest" ]]; then
+  backup_file="$tmux_dest.backup.$(date +%s)"
+  echo "backing up existing .tmux.conf to $backup_file"
+  mv "$tmux_dest" "$backup_file"
+fi
+
+ln -sf "$tmux_src" "$tmux_dest"
+echo "linked $tmux_src to $tmux_dest"
+
+# --------------------------
 # Link $HOME/.zshrc to ./zsh/.zshrc
 # --------------------------
 zshrc_src="$script_dir/zsh/.zshrc"
