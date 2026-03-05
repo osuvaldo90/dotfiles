@@ -67,6 +67,14 @@ else
   echo "fd already installed"
 fi
 
+# fzf
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "installing fzf"
+  install_pkg fzf fzf fzf
+else
+  echo "fzf already installed"
+fi
+
 # lazygit
 if ! command -v lazygit >/dev/null 2>&1; then
   echo "installing lazygit"
