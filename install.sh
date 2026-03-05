@@ -24,8 +24,7 @@ mkdir -p "$ZSH_CUSTOM/themes" "$ZSH_CUSTOM/plugins"
 spaceship_dir="$ZSH_CUSTOM/themes/spaceship-prompt"
 if [[ -d "$spaceship_dir/.git" ]]; then
   echo "updating spaceship-prompt"
-  git -C "$spaceship_dir" fetch --depth=1 origin || true
-  git -C "$spaceship_dir" pull --ff-only || true
+  git -C "$spaceship_dir" fetch --depth=1 origin && git -C "$spaceship_dir" reset --hard FETCH_HEAD || true
 else
   echo "cloning spaceship-prompt"
   git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$spaceship_dir" --depth=1 || true
