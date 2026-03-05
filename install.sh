@@ -63,51 +63,9 @@ git config --global git-town.sync-feature-strategy rebase
 git config --global git-town.sync-tags false
 
 # --------------------------
-# Neovim install (skip if present)
+# Neovim (prerequisites + install + config)
 # --------------------------
-if ! command -v nvim >/dev/null 2>&1; then
-  echo "installing neovim"
-  if [[ "$(uname -s)" == "Darwin" ]]; then
-    brew install neovim
-  elif [[ "$(uname -s)" == "Linux" ]]; then
-    curl -fsSL -o /tmp/nvim-linux64.tar.gz \
-      "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
-    sudo tar -C /opt -xzf /tmp/nvim-linux64.tar.gz
-    sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
-    rm -f /tmp/nvim-linux64.tar.gz
-  else
-    echo "unsupported OS for automatic neovim install; please install manually"
-  fi
-else
-  echo "neovim already installed"
-fi
-
-# --------------------------
-# LazyVim config (symlink dotfiles/neovim → ~/.config/nvim)
-# --------------------------
-nvim_config_src="$script_dir/neovim"
-nvim_config_dest="$HOME/.config/nvim"
-
-mkdir -p "$HOME/.config"
-
-if [[ -d "$nvim_config_dest" && ! -L "$nvim_config_dest" ]]; then
-  backup_dir="$nvim_config_dest.backup.$(date +%s)"
-  echo "backing up existing nvim config to $backup_dir"
-  mv "$nvim_config_dest" "$backup_dir"
-fi
-
-ln -sfn "$nvim_config_src" "$nvim_config_dest"
-echo "linked $nvim_config_src to $nvim_config_dest"
-
-# --------------------------
-# tree-sitter-cli (needed by nvim-treesitter to compile parsers)
-# --------------------------
-if ! command -v tree-sitter >/dev/null 2>&1; then
-  echo "installing tree-sitter-cli"
-  npm install -g tree-sitter-cli
-else
-  echo "tree-sitter-cli already installed"
-fi
+"$script_dir/neovim/install.sh"
 
 # --------------------------
 # Link $HOME/.zshrc to ./zsh/.zshrc
