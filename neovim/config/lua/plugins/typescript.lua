@@ -2,8 +2,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local has_tsgo = vim.fn.executable("node_modules/.bin/tsgo") == 1
-        or vim.fn.executable("tsgo") == 1
+      local has_tsgo = vim.fn.executable("node_modules/.bin/tsgo") == 1 or vim.fn.executable("tsgo") == 1
 
       opts.servers = opts.servers or {}
       opts.servers.tsgo = { enabled = has_tsgo }
