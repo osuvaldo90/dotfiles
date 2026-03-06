@@ -20,17 +20,7 @@ fi
 # --------------------------
 # Git Town install (skip if present)
 # --------------------------
-if ! command -v git-town >/dev/null 2>&1; then
-  echo "installing git-town"
-  # the official installer might require sudo depending on platform; keep it safe
-  curl -fsSL https://www.git-town.com/install.sh | sh || echo "git-town install failed; please install manually"
-else
-  echo "git-town already installed"
-fi
-git config --global git-town.main-branch main
-git config --global git-town.github-connector gh
-git config --global git-town.sync-feature-strategy rebase
-git config --global git-town.sync-tags false
+"$script_dir/git-town/install.sh"
 
 # --------------------------
 # Node (via nvm)
@@ -45,15 +35,5 @@ git config --global git-town.sync-tags false
 # --------------------------
 # Link $HOME/.tmux.conf to ./tmux/.tmux.conf
 # --------------------------
-tmux_src="$script_dir/tmux/.tmux.conf"
-tmux_dest="$HOME/.tmux.conf"
-
-if [[ -f "$tmux_dest" && ! -L "$tmux_dest" ]]; then
-  backup_file="$tmux_dest.backup.$(date +%s)"
-  echo "backing up existing .tmux.conf to $backup_file"
-  mv "$tmux_dest" "$backup_file"
-fi
-
-ln -sf "$tmux_src" "$tmux_dest"
-echo "linked $tmux_src to $tmux_dest"
+"$script_dir/tmux/install.sh"
 

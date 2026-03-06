@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workflow
 
-After making changes to the repo, you must consider whether the repo README.md file needs to be updated. When a tool is added/removed or a tool configuration is changed you must update the REAMDE.md file. Run the `test.sh` script to verify your changes and iterate until it succeeds. If you add/remove a tool or change a tool configuration you must update the `test-verify.sh` script.
+After making changes to the repo, ALWAYS run `./test.sh` to verify your changes and iterate until it succeeds — no exceptions. If `docker` is not available, report that clearly to the user rather than skipping tests silently. If you add/remove a tool or change a tool configuration you must also update `test-verify.sh`. When a tool is added/removed or a tool configuration is changed you must update the README.md file.
 
 ## Installation
 
