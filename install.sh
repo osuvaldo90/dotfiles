@@ -62,6 +62,11 @@ git config --global git-town.sync-feature-strategy rebase
 git config --global git-town.sync-tags false
 
 # --------------------------
+# Node (via nvm)
+# --------------------------
+"$script_dir/node/install.sh"
+
+# --------------------------
 # Neovim (prerequisites + install + config)
 # --------------------------
 "$script_dir/neovim/install.sh"
