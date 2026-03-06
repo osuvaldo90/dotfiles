@@ -6,6 +6,13 @@ script_dir=$(dirname "$(readlink -f "$0")")
 echo "script_dir=$script_dir"
 
 # --------------------------
+# macOS (homebrew)
+# --------------------------
+if [[ "$(uname)" == "Darwin" ]]; then
+  "$script_dir/macos/install.sh"
+fi
+
+# --------------------------
 # Zsh (oh-my-zsh, spaceship, autosuggestions, .zshrc link, extra dotfiles)
 # --------------------------
 "$script_dir/zsh/install.sh"
