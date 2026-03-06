@@ -25,7 +25,8 @@ Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before
 | fd | `brew install` | apt/dnf/yum |
 | fzf | `brew install` | apt/dnf/yum |
 | lazygit | `brew install` | GitHub release tarball |
-| Node.js | `brew install` | apt/dnf/yum |
+| nvm | curl installer | curl installer |
+| Node.js (LTS) | nvm | nvm |
 | tree-sitter-cli | `npm install -g` | `npm install -g` |
 
 Build tools (Xcode CLT on macOS, `build-essential`/`gcc` on Linux) are installed automatically so tree-sitter parsers can compile.
@@ -39,6 +40,27 @@ Symlinks created:
 | `neovim/config/` | `~/.config/nvim/` |
 
 Existing files at those destinations are backed up with a timestamp suffix before the symlink is created.
+
+---
+
+## Testing
+
+The install script can be tested end-to-end inside a Docker container without touching the host machine.
+
+```sh
+./test.sh
+```
+
+This builds an Ubuntu image (`Dockerfile`) with the minimal bootstrap prerequisites (git, curl, zsh, sudo), mounts the local repo into the container, runs `install.sh`, and then runs `test-verify.sh` to check every installed component.
+
+`test-verify.sh` checks:
+- oh-my-zsh directory, spaceship symlink, zsh-autosuggestions directory
+- git-town binary and its four global git config values
+- nvm, node, npm versions and the `lts/*` default alias
+- ripgrep, fd, fzf, lazygit, tree-sitter-cli binaries
+- `~/.tmux.conf`, `~/.zshrc`, `~/.config/nvim` symlinks
+
+Docker layer caching makes repeat runs fast — only the `docker run` step re-executes on subsequent calls.
 
 ---
 
