@@ -1,22 +1,23 @@
-return {
-  "folke/persistence.nvim",
-  event = "VimEnter",
-  config = function(_, opts)
-    require("persistence").setup(opts)
-    -- Auto-restore session when neovim is opened in a directory (no file arguments)
-    if vim.fn.argc(-1) == 0 then
-      vim.schedule(function()
-        require("persistence").load()
-        -- Re-trigger filetype detection so treesitter attaches to restored buffers
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          if vim.api.nvim_buf_is_loaded(buf) then
-            local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
-            if ft ~= "" then
-              vim.api.nvim_set_option_value("filetype", ft, { buf = buf })
-            end
-          end
-        end
-      end)
-    end
-  end,
-}
+return {}
+-- return {
+--   "folke/persistence.nvim",
+--   event = "VimEnter",
+--   config = function(_, opts)
+--     require("persistence").setup(opts)
+--     -- Auto-restore session when neovim is opened in a directory (no file arguments)
+--     if vim.fn.argc(-1) == 0 then
+--       vim.schedule(function()
+--         require("persistence").load()
+--         -- Re-trigger filetype detection so treesitter attaches to restored buffers
+--         for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+--           if vim.api.nvim_buf_is_loaded(buf) then
+--             local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+--             if ft ~= "" then
+--               vim.api.nvim_set_option_value("filetype", ft, { buf = buf })
+--             end
+--           end
+--         end
+--       end)
+--     end
+--   end,
+-- }
