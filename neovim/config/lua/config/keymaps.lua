@@ -39,3 +39,5 @@ vim.keymap.set("n", "<leader>bc", function()
   vim.fn.setreg("+", path)
   vim.notify("Copied: " .. path)
 end, { desc = "Copy buffer relative path" })
+
+vim.keymap.set("i", "<M-BS>", "<C-w>", { desc = "Delete word backward" })
