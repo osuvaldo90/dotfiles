@@ -16,3 +16,5 @@ git config --global git-town.main-branch main
 git config --global git-town.github-connector gh
 git config --global git-town.sync-feature-strategy rebase
 git config --global git-town.sync-tags false
+git config --global git-town.proposal-breadcrumb stacks
+
