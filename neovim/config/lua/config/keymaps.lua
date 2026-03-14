@@ -41,3 +41,7 @@ vim.keymap.set("n", "<leader>bc", function()
 end, { desc = "Copy buffer relative path" })
 
 vim.keymap.set("i", "<M-BS>", "<C-w>", { desc = "Delete word backward" })
+
+vim.keymap.set("n", "<leader>bw", function()
+  vim.opt_local.wrap = not vim.opt_local.wrap:get()
+end, { desc = "Toggle wrap" })

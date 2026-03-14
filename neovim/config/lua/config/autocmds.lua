@@ -6,3 +6,19 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+
+local function set_prose_wrap()
+  vim.opt_local.wrap = true
+  vim.opt_local.linebreak = true
+  vim.opt_local.textwidth = 100
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "log", "gitcommit" },
+  callback = set_prose_wrap,
+})
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*.log",
+  callback = set_prose_wrap,
+})
