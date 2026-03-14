@@ -45,3 +45,7 @@ vim.keymap.set("i", "<M-BS>", "<C-w>", { desc = "Delete word backward" })
 vim.keymap.set("n", "<leader>bw", function()
   vim.opt_local.wrap = not vim.opt_local.wrap:get()
 end, { desc = "Toggle wrap" })
+
+vim.keymap.set("n", "<leader>fG", function()
+  Snacks.picker.git_status()
+end, { desc = "Find git changed files" })
