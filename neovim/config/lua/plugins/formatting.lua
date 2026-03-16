@@ -63,7 +63,7 @@ return {
         opts.formatters_by_ft[ft] = formatters
       end
 
-      -- oxfmt: only active when .oxfmtrc.json is found in the project.
+      -- oxfmt: only active when .oxfmtrc.json or .oxfmtrc.jsonc is found in the project.
       -- Resolves the binary at format-time: local node_modules → global → npx.
       opts.formatters.oxfmt = {
         command = function(_, ctx)
@@ -78,7 +78,7 @@ return {
         end,
         stdin = true,
         condition = function(_, ctx)
-          return vim.fs.find({ ".oxfmtrc.json" }, {
+          return vim.fs.find({ ".oxfmtrc.json", ".oxfmtrc.jsonc" }, {
             path = ctx.filename,
             upward = true,
           })[1] ~= nil
