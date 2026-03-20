@@ -13,6 +13,7 @@ zsh_files_dir=$(dirname "$(readlink -f "$ZSHRC")")
 source "$zsh_files_dir/aliases.zsh"
 source "$zsh_files_dir/exports.zsh"
 source "$zsh_files_dir/functions.zsh"
+source "$zsh_files_dir/gitpod.zsh"
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"
