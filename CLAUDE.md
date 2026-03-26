@@ -23,7 +23,11 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 | `neovim/config/`             | Symlinked to `~/.config/nvim/`. LazyVim-based config                                                    |
 | `neovim/config/lua/plugins/` | Plugin overrides — one file per plugin                                                                  |
 | `neovim/config/lua/config/`  | LazyVim core config: `options.lua`, `keymaps.lua`, `autocmds.lua`                                       |
-| `zsh/.zshrc`                 | Symlinked to `~/.zshrc`. Loads oh-my-zsh, then sources `aliases.zsh`, `exports.zsh`, `functions.zsh`    |
+| `zsh/.zshrc`                 | Symlinked to `~/.zshrc`. Loads oh-my-zsh, then sources per-tool zsh files                               |
+| `git/git.zsh`                | Git aliases and helper functions (stash/rebase workflows)                                               |
+| `git-town/git-town.zsh`      | Git Town aliases                                                                                        |
+| `docker/docker.zsh`           | Docker Compose aliases                                                                                  |
+| `gitpod/gitpod.zsh`           | Gitpod environment management (oc command + completions)                                                |
 | `tmux/.tmux.conf`            | Symlinked to `~/.tmux.conf`. Focused on OSC 52 clipboard passthrough for SSH                            |
 
 ## Key design decisions

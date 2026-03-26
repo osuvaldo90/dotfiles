@@ -75,24 +75,16 @@ The main entry point. Loads oh-my-zsh with the spaceship theme and the following
 - `encode64` — `encode64` / `decode64` helpers
 - `zsh-autosuggestions` — inline suggestions as you type
 
-After oh-my-zsh, it sources `aliases.zsh`, `exports.zsh`, and `functions.zsh` from the same directory (resolved via symlink so it always finds the right files). Finally, it sources `~/.zshrc.local` if present, for machine-specific config.
+After oh-my-zsh, it sources per-tool zsh files from their respective top-level directories (e.g., `git/git.zsh`, `docker/docker.zsh`). Finally, it sources `~/.zshrc.local` if present, for machine-specific config.
 
-### `exports.zsh`
+Inline config in `.zshrc`:
+- **Spaceship prompt layout**: `user dir host git exec_time line_sep exit_code char`
+- **zsh-autosuggestions strategy**: `match_prev_cmd` → `completion` → `history`
+- **Editor**: `EDITOR` and `VISUAL` set to `nvim`
 
-**Spaceship prompt layout** — controls which segments appear and in what order:
+### `git/git.zsh`
 
-```
-user  dir  host  git  exec_time  line_sep  exit_code  char
-```
-
-**zsh-autosuggestions strategy** — tries suggestions in this order:
-1. `match_prev_cmd` — prefer completions that followed the same previous command
-2. `completion` — fall back to zsh completions
-3. `history` — fall back to history search
-
-### `aliases.zsh`
-
-#### Git — core shortcuts
+#### Core shortcuts
 
 | Alias | Command | Description |
 |---|---|---|
@@ -106,7 +98,7 @@ user  dir  host  git  exec_time  line_sep  exit_code  char
 | `ga.` | `git add .` | Stage all changes |
 | `cotmp` | Delete and recreate `tmp` branch | Quickly reset a scratch branch |
 
-#### Git — log views
+#### Log views
 
 All log aliases use a graph format with commit subject, hash, date, author, and decorations.
 
@@ -118,7 +110,37 @@ All log aliases use a graph format with commit subject, hash, date, author, and 
 | `lgd` | Graph log with absolute local dates |
 | `lgt` | Interactive log via `tv git-log` |
 
-#### Git Town — branch workflow
+#### Compound workflows
+
+| Alias | Expands to | Description |
+|---|---|---|
+| `newpr` | `re <main> && pu && gh pr create` | Rebase onto main, push, open PR |
+| `rem` | `re_remote <main>` | Fetch and rebase onto remote main |
+| `reom` | `reo origin/<main>` | Rebase --onto remote main |
+| `rpf` | `rem && pf` | Rebase onto remote main then force-push |
+| `frpf` | `fh && rem && pf` | Amend HEAD, rebase onto remote main, force-push |
+
+#### Helper functions
+
+Functions for git operations that stash, do something, and unstash — keeping the working tree clean across branch switches.
+
+**`stash` / `unstash`** — `stash` runs `git stash -u` (including untracked files) and returns the pre-stash count. `unstash` pops only if the stash count actually grew.
+
+**`pl`** — Pull with rebase, safely stashing and restoring any in-progress work.
+
+**`ub <branch>`** — Update (pull --rebase) another branch without leaving the current one.
+
+**`re <branch>`** — Rebase the current branch onto a local branch after first updating that branch.
+
+**`re_remote <branch>`** — Like `re`, but fetches from origin instead of checking out locally.
+
+**`reo <onto> <upstream>`** — `git rebase --onto` variant with local update of the onto branch.
+
+**`rei <branch>`** — Interactive rebase onto a local branch (same stash/update pattern).
+
+**`gsts [stash-ref]`** — Show the full diff of a stash entry, including tracked changes and untracked file snapshot (`^3`).
+
+### `git-town/git-town.zsh`
 
 [git-town](https://www.git-town.com/) manages branch stacks and syncing. Configured with:
 - Main branch: `main`
@@ -141,17 +163,7 @@ All log aliases use a graph format with commit subject, hash, date, author, and 
 | `gts` | `git town skip` | Skip a conflicting sync step |
 | `gtb` | `git town branch` | Show branch lineage |
 
-#### Compound git workflows
-
-| Alias | Expands to | Description |
-|---|---|---|
-| `newpr` | `re <main> && pu && gh pr create` | Rebase onto main, push, open PR |
-| `rem` | `re_remote <main>` | Fetch and rebase onto remote main |
-| `reom` | `reo origin/<main>` | Rebase --onto remote main |
-| `rpf` | `rem && pf` | Rebase onto remote main then force-push |
-| `frpf` | `fh && rem && pf` | Amend HEAD, rebase onto remote main, force-push |
-
-#### Docker Compose
+### `docker/docker.zsh`
 
 | Alias | Command |
 |---|---|
@@ -167,34 +179,6 @@ All log aliases use a graph format with commit subject, hash, date, author, and 
 | `dcst` | `docker compose start` |
 | `dct` | `docker compose top` |
 | `dcuw` | `docker compose up --wait` |
-
-### `functions.zsh`
-
-Helper functions for git operations that need to stash, do something, and unstash — keeping the working tree clean across branch switches.
-
-**`stash` / `unstash`**
-`stash` runs `git stash -u` (including untracked files) and returns the pre-stash count. `unstash` pops only if the stash count actually grew, so calling it unconditionally is safe.
-
-**`pl`**
-Pull with rebase, safely stashing and restoring any in-progress work.
-
-**`ub <branch>`**
-Update (pull --rebase) another branch without leaving the current one. Stashes, checks out `<branch>`, pulls, then returns and unstashes.
-
-**`re <branch>`**
-Rebase the current branch onto a local branch after first updating that branch. Equivalent to `ub <branch>` then `git rebase <branch>`.
-
-**`re_remote <branch>`**
-Like `re`, but fetches from origin instead of checking out locally. Used by the `rem` alias.
-
-**`reo <onto> <upstream>`**
-`git rebase --onto` variant. Updates `<onto>` locally first, then rebases the current branch onto it using the provided upstream as the fork point.
-
-**`rei <branch>`**
-Interactive rebase onto a local branch (same stash/update pattern).
-
-**`gsts [stash-ref]`**
-Show the full diff of a stash entry, including both the tracked changes and the untracked file snapshot (`^3`). Defaults to `stash@{0}`.
 
 ---
 

@@ -21,7 +21,7 @@ _oc_connect() {
   if [[ "$mode" == "retry" ]]; then
     local attempt=0
     while [[ $attempt -lt 5 ]]; do
-      ssh -t "$env_id".gitpod.environment 'tmux -CC a || tmux -CC' && break
+      ssh -t "$env_id".gitpod.environment "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}" && break
       echo "SSH not ready, retrying in 3s... (attempt $((attempt + 1))/5)"
       sleep 3
       ((attempt++))
@@ -33,7 +33,7 @@ _oc_connect() {
       return 1
     fi
   else
-    ssh -t "$env_id".gitpod.environment 'tmux -CC a || tmux -CC'
+    ssh -t "$env_id".gitpod.environment "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}"
   fi
 
   echo -ne "\033]2;$(hostname -s)\007"
