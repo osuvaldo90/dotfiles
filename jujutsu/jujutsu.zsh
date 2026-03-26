@@ -1,6 +1,7 @@
 alias jl="jj log"
 alias jn="jj new"
 alias je="jj edit"
+alias jc="jj commit"
 alias jf="jj git fetch"
 alias jp="jj git push"
 alias jb="jj bookmark"
