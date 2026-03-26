@@ -20,6 +20,7 @@ Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before
 | spaceship-prompt | git clone | git clone |
 | zsh-autosuggestions | git clone | git clone |
 | git-town | curl installer | curl installer |
+| jujutsu (jj) | curl installer | curl installer |
 | Neovim | `brew install neovim` | GitHub release tarball → `/opt` |
 | ripgrep | `brew install` | apt/dnf/yum |
 | fd | `brew install` | apt/dnf/yum |
@@ -56,6 +57,7 @@ This builds an Ubuntu image (`Dockerfile`) with the minimal bootstrap prerequisi
 `test-verify.sh` checks:
 - oh-my-zsh directory, spaceship symlink, zsh-autosuggestions directory
 - git-town binary and its four global git config values
+- jujutsu (jj) binary
 - nvm, node, npm versions and the `lts/*` default alias
 - ripgrep, fd, fzf, lazygit, tree-sitter-cli binaries
 - `~/.tmux.conf`, `~/.zshrc`, `~/.config/nvim` symlinks
@@ -162,6 +164,22 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `gtc` | `git town continue` | Continue after resolving conflicts |
 | `gts` | `git town skip` | Skip a conflicting sync step |
 | `gtb` | `git town branch` | Show branch lineage |
+
+### `jujutsu/jujutsu.zsh`
+
+[Jujutsu](https://github.com/jj-vcs/jj) is a Git-compatible VCS. Shell completions are loaded automatically when `jj` is on `$PATH`.
+
+| Alias | Command | Description |
+|---|---|---|
+| `jl` | `jj log` | Show revision log |
+| `jn` | `jj new` | Create a new change |
+| `je` | `jj edit` | Edit a revision |
+| `jf` | `jj git fetch` | Fetch from Git remote |
+| `jp` | `jj git push` | Push to Git remote |
+| `jb` | `jj bookmark` | Manage bookmarks |
+| `jd` | `jj diff` | Show diff |
+| `js` | `jj st` | Show status |
+| `ja` | `jj abandon` | Abandon a change |
 
 ### `docker/docker.zsh`
 

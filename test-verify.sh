@@ -64,6 +64,9 @@ check_git_config git-town.github-connector      gh
 check_git_config git-town.sync-feature-strategy rebase
 check_git_config git-town.sync-tags             false
 
+# --- jujutsu ---
+check_cmd "jj"          jj --version
+
 # --- node / nvm ---
 check_cmd "nvm"         nvm --version
 check_cmd "node"        node --version

@@ -21,6 +21,7 @@ source "$dotfiles_dir/git/git.zsh"
 source "$dotfiles_dir/git-town/git-town.zsh"
 source "$dotfiles_dir/docker/docker.zsh"
 source "$dotfiles_dir/gitpod/gitpod.zsh"
+source "$dotfiles_dir/jujutsu/jujutsu.zsh"
 
 if [[ -f "$HOME/.zshrc.local" ]]; then
   source "$HOME/.zshrc.local"

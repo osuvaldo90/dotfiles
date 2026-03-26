@@ -23,6 +23,11 @@ fi
 "$script_dir/git-town/install.sh"
 
 # --------------------------
+# Jujutsu (jj)
+# --------------------------
+"$script_dir/jujutsu/install.sh"
+
+# --------------------------
 # Node (via nvm)
 # --------------------------
 # "$script_dir/node/install.sh"
