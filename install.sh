@@ -30,7 +30,7 @@ fi
 # --------------------------
 # Node (via nvm)
 # --------------------------
-# "$script_dir/node/install.sh"
+"$script_dir/node/install.sh"
 
 # --------------------------
 # Neovim (prerequisites + install + config)
