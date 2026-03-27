@@ -4,12 +4,22 @@ export PATH=$HOME/.local/bin:$PATH
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="spaceship"
 ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion history)
-plugins=(git gh encode64 zsh-autosuggestions)
+plugins=(git gh encode64 zsh-autosuggestions spaceship-jj)
 
 source $ZSH/oh-my-zsh.sh
 
 # spaceship prompt
-SPACESHIP_PROMPT_ORDER=(user dir host git exec_time line_sep exit_code char)
+SPACESHIP_PROMPT_ORDER=(user dir host jj git exec_time line_sep exit_code char)
+
+# hide git prompt section inside jj repos (jj uses git internally, so both would show)
+_spaceship_jj_toggle_git() {
+  if jj root --quiet >/dev/null 2>&1; then
+    SPACESHIP_GIT_SHOW=false
+  else
+    SPACESHIP_GIT_SHOW=true
+  fi
+}
+precmd_functions+=(_spaceship_jj_toggle_git)
 
 export EDITOR=nvim
 export VISUAL=nvim

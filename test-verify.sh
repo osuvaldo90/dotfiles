@@ -66,6 +66,7 @@ check_git_config git-town.sync-tags             false
 
 # --- jujutsu ---
 check_cmd "jj"          jj --version
+check_dir "$HOME/.oh-my-zsh/custom/plugins/spaceship-jj"
 
 # --- node / nvm ---
 check_cmd "nvm"         nvm --version

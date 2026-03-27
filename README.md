@@ -21,6 +21,7 @@ Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before
 | zsh-autosuggestions | git clone | git clone |
 | git-town | curl installer | curl installer |
 | jujutsu (jj) | curl installer | curl installer |
+| spaceship-jj | git clone | git clone |
 | Neovim | `brew install neovim` | GitHub release tarball → `/opt` |
 | ripgrep | `brew install` | apt/dnf/yum |
 | fd | `brew install` | apt/dnf/yum |
@@ -76,11 +77,12 @@ The main entry point. Loads oh-my-zsh with the spaceship theme and the following
 - `gh` — GitHub CLI completions
 - `encode64` — `encode64` / `decode64` helpers
 - `zsh-autosuggestions` — inline suggestions as you type
+- `spaceship-jj` — jujutsu prompt section for spaceship
 
 After oh-my-zsh, it sources per-tool zsh files from their respective top-level directories (e.g., `git/git.zsh`, `docker/docker.zsh`). Finally, it sources `~/.zshrc.local` if present, for machine-specific config.
 
 Inline config in `.zshrc`:
-- **Spaceship prompt layout**: `user dir host git exec_time line_sep exit_code char`
+- **Spaceship prompt layout**: `user dir host jj git exec_time line_sep exit_code char` — in jj repos the git section is automatically hidden via a `precmd` hook
 - **zsh-autosuggestions strategy**: `match_prev_cmd` → `completion` → `history`
 - **Editor**: `EDITOR` and `VISUAL` set to `nvim`
 
