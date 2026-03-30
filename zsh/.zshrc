@@ -23,6 +23,7 @@ precmd_functions=(_spaceship_jj_toggle_git $precmd_functions)
 
 export EDITOR=nvim
 export VISUAL=nvim
+export LESS="-FR"
 
 # source per-tool zsh config
 ZSHRC="$HOME/.zshrc"

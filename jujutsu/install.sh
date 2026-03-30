@@ -2,6 +2,8 @@
 set -eu
 set -o pipefail
 
+script_dir=$(dirname "$(readlink -f "$0")")
+
 # --------------------------
 # Jujutsu (jj) install (skip if present)
 # --------------------------
@@ -23,6 +25,14 @@ else
     rm -rf "$tmpdir"
   fi
 fi
+
+# --------------------------
+# Link shared jj config into conf.d (keeps user config.toml untouched)
+# --------------------------
+jj_confd="$HOME/.config/jj/conf.d"
+mkdir -p "$jj_confd"
+ln -sf "$script_dir/config.toml" "$jj_confd/dotfiles.toml"
+echo "linked jj config to $jj_confd/dotfiles.toml"
 
 # --------------------------
 # spaceship-jj prompt section (clone or update)
