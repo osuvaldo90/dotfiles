@@ -19,7 +19,7 @@ _spaceship_jj_toggle_git() {
     SPACESHIP_GIT_SHOW=true
   fi
 }
-precmd_functions+=(_spaceship_jj_toggle_git)
+precmd_functions=(_spaceship_jj_toggle_git $precmd_functions)
 
 export EDITOR=nvim
 export VISUAL=nvim
