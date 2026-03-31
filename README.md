@@ -20,7 +20,7 @@ Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before
 | spaceship-prompt | git clone | git clone |
 | zsh-autosuggestions | git clone | git clone |
 | git-town | curl installer | curl installer |
-| jujutsu (jj) | curl installer | curl installer |
+| jujutsu (jj) | `brew install jj` | GitHub release tarball |
 | spaceship-jj | git clone | git clone |
 | Neovim | `brew install neovim` | GitHub release tarball → `/opt` |
 | ripgrep | `brew install` | apt/dnf/yum |
@@ -85,6 +85,7 @@ Inline config in `.zshrc`:
 - **Spaceship prompt layout**: `user dir host jj git exec_time line_sep exit_code char` — in jj repos the git section is automatically hidden via a `precmd` hook
 - **zsh-autosuggestions strategy**: `match_prev_cmd` → `completion` → `history`
 - **Editor**: `EDITOR` and `VISUAL` set to `nvim`
+- **Less**: `LESS="-FR"` — quit if output fits one screen, pass through raw control characters
 
 ### `git/git.zsh`
 
@@ -173,15 +174,18 @@ Functions for git operations that stash, do something, and unstash — keeping t
 
 | Alias | Command | Description |
 |---|---|---|
-| `jl` | `jj log` | Show revision log |
-| `jn` | `jj new` | Create a new change |
-| `je` | `jj edit` | Edit a revision |
-| `jf` | `jj git fetch` | Fetch from Git remote |
-| `jp` | `jj git push` | Push to Git remote |
-| `jb` | `jj bookmark` | Manage bookmarks |
-| `jd` | `jj diff` | Show diff |
-| `js` | `jj st` | Show status |
-| `ja` | `jj abandon` | Abandon a change |
+| `jlg` | `jj log` | Show revision log |
+| `jne` | `jj new` | Create a new change |
+| `jed` | `jj edit` | Edit a revision |
+| `jde` | `jj desc` | Describe (edit commit message) |
+| `jpl` | `jj git fetch` | Fetch from Git remote |
+| `jpu` | `jj git push` | Push to Git remote |
+| `jbk` | `jj bookmark` | Manage bookmarks |
+| `jdf` | `jj diff` | Show diff |
+| `jst` | `jj st` | Show status |
+| `jsq` | `jj squash` | Squash changes |
+| `jab` | `jj abandon` | Abandon a change |
+| `jrb` | `jj rebase` | Rebase a revision |
 
 ### `docker/docker.zsh`
 
@@ -223,6 +227,7 @@ Built on [LazyVim](https://www.lazyvim.org/) with a small set of overrides and a
 | Extra | What it adds |
 |---|---|
 | `ai.claudecode` | Claude Code integration (see below) |
+| `ai.copilot` | GitHub Copilot completions |
 | `formatting.prettier` | Prettier as the formatter for JS/TS/CSS/JSON/etc |
 | `lang.typescript` | TypeScript LSP, treesitter, and tooling |
 | `linting.eslint` | ESLint via `nvim-lint` |
@@ -233,18 +238,56 @@ Built on [LazyVim](https://www.lazyvim.org/) with a small set of overrides and a
 Sets `always_show_bufferline = true` so the buffer tab bar is visible even with a single buffer open.
 
 **`claudecode.lua`**
-Configures [claudecode.nvim](https://github.com/coder/claudecode.nvim) to launch Claude Code with `--dangerously-skip-permissions`, avoiding permission prompts inside the editor terminal.
+Configures [claudecode.nvim](https://github.com/coder/claudecode.nvim) to launch Claude Code with `--permission-mode auto`. Also adds a `WinEnter` autocmd that redraws terminal windows to fix cursor misalignment caused by TUI apps.
+
+**`colorscheme.lua`**
+Installs [zenbones.nvim](https://github.com/zenbones-theme/zenbones.nvim) (with Lush dependency) and sets the `nordbones` colorscheme.
+
+**`formatting.lua`**
+Configures [conform.nvim](https://github.com/stevearc/conform.nvim) with a priority-ordered formatter chain for JS/TS/CSS/JSON/GraphQL files:
+1. **oxfmt** — active when `.oxfmtrc.json` or `.oxfmtrc.jsonc` is found. Resolves binary from local `node_modules`, global `$PATH`, or `npx` fallback.
+2. **biome** — active when `biome.json` or `biome.jsonc` is found.
+3. **prettier** — fallback, provided by the LazyVim formatting extra.
 
 **`gitsigns.lua`**
 Enables `current_line_blame = true` so git blame info appears inline at the end of the current line.
 
-**`persistence.lua`**
-Configures [persistence.nvim](https://github.com/folke/persistence.nvim) to auto-restore the previous session when Neovim is opened in a directory with no file arguments. After restoring, it re-triggers filetype detection on all loaded buffers so tree-sitter parsers and LSP attach correctly.
+**`graphql.lua`**
+Adds GraphQL support: ensures the treesitter `graphql` parser is installed and configures the GraphQL language server (requires `graphql-language-service-cli` and a `.graphqlrc.yml` or `graphql.config.ts` in the project root).
+
+**`lualine.lua`**
+Replaces the default LazyVim status line path component with a non-truncating version that shows the path relative to the current working directory.
+
+**`scrollbar.lua`**
+Configures [satellite.nvim](https://github.com/lewis6991/satellite.nvim) to show a scrollbar with cursor position, diagnostics, and gitsigns indicators.
+
+**`snacks.lua`**
+Configures the [snacks.nvim](https://github.com/folke/snacks.nvim) picker to include hidden and ignored files in file search, smart search, and grep.
+
+**`treesitter-context.lua`**
+Enables [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) with up to 13 context lines pinned at the top of the window.
 
 **`typescript.lua`**
 Auto-selects the TypeScript language server based on what's available in the project:
 - If `tsgo` is on `$PATH` or in `node_modules/.bin/`, use `tsgo` (the faster Go-based TS server).
 - Otherwise, fall back to `vtsls`.
+
+Also adds [typescript-explorer.nvim](https://github.com/osuvaldo90/typescript-explorer.nvim) for TypeScript type exploration.
+
+### `lua/config/keymaps.lua` — Custom keymaps
+
+| Key | Mode | Description |
+|---|---|---|
+| `<leader>gc` | n, v | Copy GitHub URL of current file/selection to clipboard |
+| `<leader>bc` | n | Copy buffer relative path to clipboard |
+| `<M-BS>` | i | Delete word backward (Alt+Backspace) |
+| `<leader>bw` | n | Toggle line wrapping |
+| `<leader>fG` | n | Find git changed files via Snacks picker |
+
+### `lua/config/autocmds.lua` — Custom autocmds
+
+- **Prose wrapping**: Sets `wrap`, `linebreak`, and `textwidth=100` for markdown, text, log, and gitcommit files.
+- **Buffer auto-reload**: Runs `checktime` on `BufEnter` and `CursorHold` to reload buffers changed on disk (supplements LazyVim's `FocusGained` handler for tmux/Claude Code scenarios).
 
 ### `lua/config/options.lua` — SSH clipboard
 

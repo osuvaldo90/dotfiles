@@ -18,14 +18,22 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 
 | Path                         | Purpose                                                                                                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `install.sh`                 | Top-level installer: oh-my-zsh, spaceship, zsh-autosuggestions, git-town, tmux symlink, zsh symlink     |
-| `neovim/install.sh`          | Neovim prerequisites (ripgrep, fd, fzf, lazygit, node, tree-sitter-cli) + nvim install + config symlink |
+| `install.sh`                 | Top-level installer: delegates to per-tool installers in order                                          |
+| `macos/install.sh`           | macOS-specific setup (Homebrew)                                                                         |
+| `zsh/install.sh`             | oh-my-zsh, spaceship-prompt, zsh-autosuggestions, `~/.zshrc` symlink                                    |
+| `git-town/install.sh`        | git-town binary + global git config                                                                     |
+| `jujutsu/install.sh`         | jj binary (brew/GitHub release), config symlink, spaceship-jj prompt section                            |
+| `jujutsu/config.toml`        | Shared jj config (linked to `~/.config/jj/conf.d/dotfiles.toml`)                                       |
+| `node/install.sh`            | nvm + Node.js LTS                                                                                       |
+| `neovim/install.sh`          | Neovim prerequisites (ripgrep, fd, fzf, lazygit, tree-sitter-cli) + nvim install + config symlink       |
 | `neovim/config/`             | Symlinked to `~/.config/nvim/`. LazyVim-based config                                                    |
 | `neovim/config/lua/plugins/` | Plugin overrides — one file per plugin                                                                  |
 | `neovim/config/lua/config/`  | LazyVim core config: `options.lua`, `keymaps.lua`, `autocmds.lua`                                       |
+| `tmux/install.sh`            | Symlinks `~/.tmux.conf`                                                                                 |
 | `zsh/.zshrc`                 | Symlinked to `~/.zshrc`. Loads oh-my-zsh, then sources per-tool zsh files                               |
 | `git/git.zsh`                | Git aliases and helper functions (stash/rebase workflows)                                               |
 | `git-town/git-town.zsh`      | Git Town aliases                                                                                        |
+| `jujutsu/jujutsu.zsh`        | Jujutsu aliases and shell completions                                                                   |
 | `docker/docker.zsh`           | Docker Compose aliases                                                                                  |
 | `gitpod/gitpod.zsh`           | Gitpod environment management (oc command + completions)                                                |
 | `tmux/.tmux.conf`            | Symlinked to `~/.tmux.conf`. Focused on OSC 52 clipboard passthrough for SSH                            |
@@ -36,11 +44,13 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 
 **SSH clipboard via OSC 52.** `neovim/config/lua/config/options.lua` detects `$SSH_TTY` and enables the OSC 52 clipboard provider. `tmux/.tmux.conf` enables `allow-passthrough on` and `set-clipboard on` so the escape sequence reaches the host terminal through tmux.
 
-**LazyVim extras** are declared in `neovim/config/lazyvim.json`. Active extras: `ai.claudecode`, `formatting.prettier`, `lang.typescript`, `linting.eslint`. Claude should not add to this file manually. The user will enable an extra through the Lazy UI which will write to this file.
+**LazyVim extras** are declared in `neovim/config/lazyvim.json`. Active extras: `ai.claudecode`, `ai.copilot`, `formatting.prettier`, `lang.typescript`, `linting.eslint`. Claude should not add to this file manually. The user will enable an extra through the Lazy UI which will write to this file.
 
 **TypeScript server selection** (`neovim/config/lua/plugins/typescript.lua`): prefers `tsgo` (Go-based, faster) if available in `$PATH` or `node_modules/.bin/`; falls back to `vtsls`.
 
-**Session restore** (`neovim/config/lua/plugins/persistence.lua`): auto-restores the previous session when nvim opens a directory with no file args, then re-triggers filetype detection so LSP and tree-sitter attach correctly.
+**Session restore** (`neovim/config/lua/plugins/persistence.lua`): currently disabled. When enabled, auto-restores the previous session when nvim opens a directory with no file args, then re-triggers filetype detection so LSP and tree-sitter attach correctly.
+
+**Claude Code** (`neovim/config/lua/plugins/claudecode.lua`): launches Claude Code with `--permission-mode auto` and adds a terminal redraw workaround for TUI cursor positioning.
 
 ## Neovim Lua formatting
 
