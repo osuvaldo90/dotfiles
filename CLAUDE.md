@@ -12,13 +12,13 @@ After making changes to the repo, ALWAYS run `./test.sh` to verify your changes 
 ./install.sh
 ```
 
-Runs from any location — resolves its own path for symlinks. Neovim install is delegated to `neovim/install.sh`. To bootstrap private/machine-specific config, set `EXTRA_DOTFILES_GIST` to a gist URL before running. Claude does not typically need to run this install script unless explicitly asked to.
+Runs from any location — resolves its own path for symlinks. Neovim install is delegated to `neovim/install.sh`. To bootstrap private/machine-specific config, set `EXTRA_DOTFILES_GIST` to a gist URL before running; the top-level `install.sh` runs that gist bootstrap **last**, after all other installers. Claude does not typically need to run this install script unless explicitly asked to.
 
 ## Repository structure
 
 | Path                         | Purpose                                                                                                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `install.sh`                 | Top-level installer: delegates to per-tool installers in order                                          |
+| `install.sh`                 | Top-level installer: delegates to per-tool installers in order; optional `EXTRA_DOTFILES_GIST` step last |
 | `macos/install.sh`           | macOS-specific setup (Homebrew)                                                                         |
 | `zsh/install.sh`             | oh-my-zsh, spaceship-prompt, zsh-autosuggestions, `~/.zshrc` symlink                                    |
 | `git-town/install.sh`        | git-town binary + global git config                                                                     |

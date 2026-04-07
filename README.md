@@ -10,7 +10,7 @@ Personal development environment configuration for macOS and Linux. Covers zsh, 
 
 Run from any location — the script resolves its own path and uses that as the root for all symlinks.
 
-Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before running. If set, the installer will fetch `~/.zshrc.local` and run a private `install.sh` from that gist.
+Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before running. If set, after every other step the installer fetches `~/.zshrc.local` and runs a private `install.sh` from that gist.
 
 ### What gets installed
 
