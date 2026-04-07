@@ -27,6 +27,14 @@ else
 fi
 
 # --------------------------
+# Create main jj config so `jj config set --user ...` saves to this file instead
+# of the linked dotfiles.toml
+# --------------------------
+jj_main_config="$HOME/.config/jj/config.toml"
+mkdir -p "$(dirname "$jj_main_config")"
+touch "$jj_main_config"
+
+# --------------------------
 # Link shared jj config into conf.d (keeps user config.toml untouched)
 # --------------------------
 jj_confd="$HOME/.config/jj/conf.d"

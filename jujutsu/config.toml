@@ -2,3 +2,6 @@
 
 [ui]
 pager = ["less", "-FR"]
+
+[remotes.origin]
+auto-track-bookmarks = "main|osvi/*"
