@@ -181,6 +181,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jde` | `jj desc` | Describe (edit commit message) |
 | `jpl` | `jj git fetch` | Fetch from Git remote |
 | `jpu` | `jj git push` | Push to Git remote |
+| `jpua` | `jj git push --allow-empty-description -c '...'` | Push all mutable, non-empty, non-bookmarked changes |
 | `jbk` | `jj bookmark` | Manage bookmarks |
 | `jdf` | `jj diff` | Show diff |
 | `jst` | `jj st` | Show status |
