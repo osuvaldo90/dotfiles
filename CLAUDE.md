@@ -23,7 +23,7 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 | `zsh/install.sh`             | oh-my-zsh, spaceship-prompt, zsh-autosuggestions, `~/.zshrc` symlink                                    |
 | `git-town/install.sh`        | git-town binary + global git config                                                                     |
 | `jujutsu/install.sh`         | jj binary (brew/GitHub release), config symlink, spaceship-jj prompt section                            |
-| `jujutsu/config.toml`        | Shared jj config (linked to `~/.config/jj/conf.d/dotfiles.toml`)                                       |
+| `jujutsu/config.toml`        | Shared jj config (linked to `~/.config/jj/conf.d/dotfiles.toml`): auto-tracks `main` and `osvi/*` bookmarks, push bookmark prefix `osvi/` |
 | `node/install.sh`            | nvm + Node.js LTS                                                                                       |
 | `neovim/install.sh`          | Neovim prerequisites (ripgrep, fd, fzf, lazygit, tree-sitter-cli) + nvim install + config symlink       |
 | `neovim/config/`             | Symlinked to `~/.config/nvim/`. LazyVim-based config                                                    |

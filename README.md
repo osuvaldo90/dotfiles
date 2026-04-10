@@ -40,6 +40,7 @@ Symlinks created:
 | `zsh/.zshrc` | `~/.zshrc` |
 | `tmux/.tmux.conf` | `~/.tmux.conf` |
 | `neovim/config/` | `~/.config/nvim/` |
+| `jujutsu/config.toml` | `~/.config/jj/conf.d/dotfiles.toml` |
 
 Existing files at those destinations are backed up with a timestamp suffix before the symlink is created.
 
@@ -187,6 +188,16 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jab` | `jj abandon` | Abandon a change |
 | `jrb` | `jj rebase` | Rebase a revision |
 | `jcmsg` | `jj commit -m` | Commit working copy with an inline message |
+
+### `jujutsu/config.toml`
+
+Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also creates an empty `~/.config/jj/config.toml` so that `jj config set --user` writes there instead of overwriting the dotfiles-managed file.
+
+| Setting | Value | Description |
+|---|---|---|
+| `ui.pager` | `less -FR` | Quit if output fits one screen |
+| `remotes.origin.auto-track-bookmarks` | `main\|osvi/*` | Only auto-track `main` and `osvi/` prefixed remote bookmarks |
+| `templates.git_push_bookmark` | `osvi/push-<short-change-id>` | Auto-name push bookmarks with `osvi/` prefix |
 
 ### `docker/docker.zsh`
 
