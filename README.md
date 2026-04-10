@@ -240,6 +240,7 @@ Built on [LazyVim](https://www.lazyvim.org/) with a small set of overrides and a
 |---|---|
 | `ai.claudecode` | Claude Code integration (see below) |
 | `ai.copilot` | GitHub Copilot completions |
+| `coding.mini-surround` | Add/delete/replace surroundings (brackets, quotes, etc.) |
 | `formatting.prettier` | Prettier as the formatter for JS/TS/CSS/JSON/etc |
 | `lang.typescript` | TypeScript LSP, treesitter, and tooling |
 | `linting.eslint` | ESLint via `nvim-lint` |
@@ -261,9 +262,6 @@ Configures [conform.nvim](https://github.com/stevearc/conform.nvim) with a prior
 2. **biome** — active when `biome.json` or `biome.jsonc` is found.
 3. **prettier** — fallback, provided by the LazyVim formatting extra.
 
-**`gitsigns.lua`**
-Enables `current_line_blame = true` so git blame info appears inline at the end of the current line.
-
 **`graphql.lua`**
 Adds GraphQL support: ensures the treesitter `graphql` parser is installed and configures the GraphQL language server (requires `graphql-language-service-cli` and a `.graphqlrc.yml` or `graphql.config.ts` in the project root).
 
@@ -274,7 +272,7 @@ Replaces the default LazyVim status line path component with a non-truncating ve
 Configures [satellite.nvim](https://github.com/lewis6991/satellite.nvim) to show a scrollbar with cursor position, diagnostics, and gitsigns indicators.
 
 **`snacks.lua`**
-Configures the [snacks.nvim](https://github.com/folke/snacks.nvim) picker to include hidden and ignored files in file search, smart search, and grep.
+Placeholder for [snacks.nvim](https://github.com/folke/snacks.nvim) picker overrides. Hidden/ignored file search is currently disabled (defaults to LazyVim behavior).
 
 **`treesitter-context.lua`**
 Enables [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) with up to 13 context lines pinned at the top of the window.
