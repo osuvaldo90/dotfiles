@@ -186,6 +186,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jsq` | `jj squash` | Squash changes |
 | `jab` | `jj abandon` | Abandon a change |
 | `jrb` | `jj rebase` | Rebase a revision |
+| `jcmsg` | `jj commit -m` | Commit working copy with an inline message |
 
 ### `docker/docker.zsh`
 
