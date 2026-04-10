@@ -176,9 +176,9 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | Alias | Command | Description |
 |---|---|---|
 | `jlg` | `jj log` | Show revision log |
-| `jne` | `jj new` | Create a new change |
+| `jnw` | `jj new` | Create a new change |
 | `jed` | `jj edit` | Edit a revision |
-| `jde` | `jj desc` | Describe (edit commit message) |
+| `jds` | `jj desc` | Describe (edit commit message) |
 | `jpl` | `jj git fetch` | Fetch from Git remote |
 | `jpu` | `jj git push` | Push to Git remote |
 | `jpua` | `jj git push --allow-empty-description -c '...'` | Push all mutable, non-empty, non-bookmarked changes |
