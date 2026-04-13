@@ -229,6 +229,20 @@ Lets tmux forward OSC 52 escape sequences from panes to the outer terminal. This
 **`set-clipboard on`**
 Tells tmux that the terminal supports the clipboard OSC sequence, so tmux's own clipboard operations also use it.
 
+### `tmux/tmux.zsh` — Shell clipboard helper
+
+| Function | Description |
+|---|---|
+| `yy` | Copy stdin to the macOS clipboard via OSC 52 |
+
+Pipe any command output to `yy` to copy it to your clipboard through tmux:
+
+```sh
+echo "hello world" | yy
+cat some-file.txt | yy
+git diff | yy
+```
+
 ---
 
 ## Neovim

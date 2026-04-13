@@ -37,6 +37,7 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 | `docker/docker.zsh`           | Docker Compose aliases                                                                                  |
 | `gitpod/gitpod.zsh`           | Gitpod environment management (oc command + completions)                                                |
 | `tmux/.tmux.conf`            | Symlinked to `~/.tmux.conf`. Focused on OSC 52 clipboard passthrough for SSH                            |
+| `tmux/tmux.zsh`              | `yy` function: pipe command output to macOS clipboard via OSC 52 (`echo hello \| yy`)                   |
 
 ## Key design decisions
 

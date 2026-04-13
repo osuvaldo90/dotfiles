@@ -87,6 +87,13 @@ check_cmd "fzf"         fzf --version
 check_cmd "lazygit"     lazygit --version
 check_cmd "tree-sitter" tree-sitter --version
 
+# --- tmux zsh helpers ---
+if whence -w yy | grep -q function; then
+  pass "yy clipboard function"
+else
+  fail "yy clipboard function not defined"
+fi
+
 # --- symlinks ---
 check_link "$HOME/.tmux.conf"
 check_link "$HOME/.zshrc"
