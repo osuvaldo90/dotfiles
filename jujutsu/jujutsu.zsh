@@ -11,6 +11,7 @@ alias jst="jj st"
 alias jsq="jj squash"
 alias jab="jj abandon"
 alias jrb="jj rebase"
+alias jrbam="jj rebase -b 'heads(mutable()) ~ empty()' -o main"
 alias jcmsg="jj commit -m"
 
 if command -v jj >/dev/null 2>&1; then
