@@ -298,6 +298,8 @@ Auto-selects the TypeScript language server based on what's available in the pro
 - If `tsgo` is on `$PATH` or in `node_modules/.bin/`, use `tsgo` (the faster Go-based TS server).
 - Otherwise, fall back to `vtsls`.
 
+Also disables LSP inlay hints globally (LazyVim's default is `enabled = true`) since the TypeScript servers now ship hint settings by default and the inline type annotations are distracting.
+
 Also adds [typescript-explorer.nvim](https://github.com/osuvaldo90/typescript-explorer.nvim) for TypeScript type exploration.
 
 ### `lua/config/keymaps.lua` — Custom keymaps
