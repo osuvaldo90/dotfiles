@@ -188,7 +188,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jsq` | `jj squash` | Squash changes |
 | `jab` | `jj abandon` | Abandon a change |
 | `jrb` | `jj rebase` | Rebase a revision |
-| `jrbam` | `jj rebase -b 'heads(mutable()) ~ empty()' -o main` | Rebase all non-empty mutable changes onto main |
+| `jrbam` | `jj rebase -b 'heads(mutable() ~ (empty() & description("")))' -o main` | Rebase all mutable heads onto main, excluding empty changes with no description |
 | `jcmsg` | `jj commit -m` | Commit working copy with an inline message |
 
 ### `jujutsu/config.toml`
