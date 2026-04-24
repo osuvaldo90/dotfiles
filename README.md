@@ -181,7 +181,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jds` | `jj desc` | Describe (edit commit message) |
 | `jpl` | `jj git fetch` | Fetch from Git remote |
 | `jpu` | `jj git push` | Push to Git remote |
-| `jpua` | `jj git push --allow-empty-description -c '...'` | Push all mutable, non-empty, non-bookmarked changes |
+| `jpua` | function | Prune superseded `osvi/push-*` bookmarks (those on commits with descendants), create push bookmarks for any mutable, non-empty, un-bookmarked heads, then push everything including deletions |
 | `jbk` | `jj bookmark` | Manage bookmarks |
 | `jdf` | `jj diff` | Show diff |
 | `jst` | `jj st` | Show status |
