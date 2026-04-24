@@ -5,16 +5,18 @@ alias jds="jj desc"
 alias jpl="jj git fetch"
 alias jpu="jj git push"
 jpua() {
-  # Prune superseded osvi/push-* bookmarks: those on commits that have descendants.
+  # Prune superseded osvi/push-* bookmarks: those with a non-scratch descendant.
+  # Empty commits with no description are treated as non-heads so they don't
+  # cause their ancestor's bookmark to be deleted.
   local stale
-  stale=$(jj log --no-graph -r 'bookmarks(glob:"osvi/push-*") ~ heads(all())' \
+  stale=$(jj log --no-graph -r 'bookmarks(glob:"osvi/push-*") ~ heads(all() ~ (empty() & description("")))' \
     -T 'bookmarks ++ "\n"' 2>/dev/null \
     | tr ' ' '\n' | grep '^osvi/push-' | sort -u)
   if [[ -n "$stale" ]]; then
     echo "$stale" | xargs jj bookmark delete
   fi
 
-  jj git push --allow-empty-description -c 'heads(mutable()) ~ bookmarks() ~ empty()'
+  jj git push --allow-empty-description -c 'heads(mutable() ~ (empty() & description(""))) ~ bookmarks()'
   jj git push --all --deleted
 }
 alias jbk="jj bookmark"
