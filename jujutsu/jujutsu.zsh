@@ -17,7 +17,7 @@ jpua() {
   fi
 
   jj git push --allow-empty-description -c 'heads(mutable() ~ (empty() & description(""))) ~ bookmarks()'
-  jj git push --all --deleted
+  jj git push --all --deleted --allow-empty-description
 }
 alias jbk="jj bookmark"
 alias jdf="jj diff"
