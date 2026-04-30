@@ -11,7 +11,7 @@ vim.keymap.set({ "n", "v" }, "<leader>gc", function()
   remote = remote:gsub("git@github%.com:", "https://github.com/")
   remote = remote:gsub("%.git$", "")
 
-  local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+  local commit = vim.fn.system("git rev-parse HEAD 2>/dev/null"):gsub("\n", "")
   local git_root = vim.fn.system("git rev-parse --show-toplevel 2>/dev/null"):gsub("\n", "")
   local file = vim.api.nvim_buf_get_name(0)
   local rel_path = file:sub(#git_root + 2)
@@ -29,7 +29,7 @@ vim.keymap.set({ "n", "v" }, "<leader>gc", function()
     line_suffix = "#L" .. vim.fn.line(".")
   end
 
-  local url = remote .. "/blob/" .. branch .. "/" .. rel_path .. line_suffix
+  local url = remote .. "/blob/" .. commit .. "/" .. rel_path .. line_suffix
   vim.fn.setreg("+", url)
   vim.notify("Copied: " .. url)
 end, { desc = "Copy GitHub URL" })

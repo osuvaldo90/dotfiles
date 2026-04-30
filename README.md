@@ -309,7 +309,7 @@ Also adds [typescript-explorer.nvim](https://github.com/osuvaldo90/typescript-ex
 
 | Key | Mode | Description |
 |---|---|---|
-| `<leader>gc` | n, v | Copy GitHub URL of current file/selection to clipboard |
+| `<leader>gc` | n, v | Copy GitHub URL of current file/selection to clipboard (uses commit hash, works with jj) |
 | `<leader>bc` | n | Copy buffer relative path to clipboard |
 | `<M-BS>` | i | Delete word backward (Alt+Backspace) |
 | `<leader>bw` | n | Toggle line wrapping |
