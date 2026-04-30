@@ -22,9 +22,3 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "*.log",
   callback = set_prose_wrap,
 })
-
--- Reload buffers changed on disk (supplements LazyVim's FocusGained handler
--- which doesn't always fire inside tmux / when returning from Claude Code)
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, {
-  command = "checktime",
-})

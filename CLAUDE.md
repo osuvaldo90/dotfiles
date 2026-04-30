@@ -43,7 +43,7 @@ Runs from any location — resolves its own path for symlinks. Neovim install is
 
 **Symlinks, not copies.** The installer creates symlinks (`ln -sf`) so edits in the repo take effect immediately without re-running the installer. Existing files are backed up with a timestamp suffix.
 
-**SSH clipboard via OSC 52.** `neovim/config/lua/config/options.lua` detects `$SSH_TTY` and enables the OSC 52 clipboard provider. `tmux/.tmux.conf` enables `allow-passthrough on` and `set-clipboard on` so the escape sequence reaches the host terminal through tmux.
+**SSH clipboard via OSC 52.** `neovim/config/lua/config/options.lua` detects `$SSH_TTY` and enables the OSC 52 clipboard provider. `tmux/.tmux.conf` enables `allow-passthrough on` and `set-clipboard on` so the escape sequence reaches the host terminal through tmux. `focus-events on` forwards focus events so Neovim's `FocusGained`/`FocusLost` autocommands fire correctly inside tmux.
 
 **LazyVim extras** are declared in `neovim/config/lazyvim.json`. Active extras: `ai.claudecode`, `ai.copilot`, `coding.mini-surround`, `formatting.prettier`, `lang.typescript`, `linting.eslint`. Claude should not add to this file manually. The user will enable an extra through the Lazy UI which will write to this file.
 

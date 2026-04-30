@@ -230,6 +230,9 @@ Lets tmux forward OSC 52 escape sequences from panes to the outer terminal. This
 **`set-clipboard on`**
 Tells tmux that the terminal supports the clipboard OSC sequence, so tmux's own clipboard operations also use it.
 
+**`focus-events on`**
+Forwards focus-in/focus-out escape sequences to applications inside tmux. This lets Neovim's `FocusGained`/`FocusLost` autocommands fire correctly so buffers auto-reload when you switch back to the terminal.
+
 ### `tmux/tmux.zsh` — Shell clipboard helper
 
 | Function | Description |
@@ -315,7 +318,6 @@ Also adds [typescript-explorer.nvim](https://github.com/osuvaldo90/typescript-ex
 ### `lua/config/autocmds.lua` — Custom autocmds
 
 - **Prose wrapping**: Sets `wrap`, `linebreak`, and `textwidth=100` for markdown, text, log, and gitcommit files.
-- **Buffer auto-reload**: Runs `checktime` on `BufEnter` and `CursorHold` to reload buffers changed on disk (supplements LazyVim's `FocusGained` handler for tmux/Claude Code scenarios).
 
 ### `lua/config/options.lua` — SSH clipboard
 
