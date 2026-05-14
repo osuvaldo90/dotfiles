@@ -14,11 +14,4 @@ return {
       })
     end,
   },
-  {
-    "osuvaldo90/typescript-explorer.nvim",
-    lazy = false,
-    config = function()
-      require("ts-explorer").setup()
-    end,
-  },
 }

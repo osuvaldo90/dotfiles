@@ -303,7 +303,6 @@ Auto-selects the TypeScript language server based on what's available in the pro
 
 Also disables LSP inlay hints globally (LazyVim's default is `enabled = true`) since the TypeScript servers now ship hint settings by default and the inline type annotations are distracting.
 
-Also adds [typescript-explorer.nvim](https://github.com/osuvaldo90/typescript-explorer.nvim) for TypeScript type exploration.
 
 ### `lua/config/keymaps.lua` — Custom keymaps
 
