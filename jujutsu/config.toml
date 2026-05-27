@@ -5,6 +5,7 @@ pager = ["less", "-FR"]
 
 # [remotes.origin]
 # auto-track-bookmarks = "main|osvi/*"
+auto-track-bookmarks = "main"
 
 [templates]
 git_push_bookmark = '"osvi/push-" ++ change_id.short()'
