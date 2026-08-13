@@ -9,31 +9,45 @@ _oc_list() {
   gitpod env list | tail -n +2
 }
 
+# Connect via SSH using the appropriate tmux integration.
+#   $1 = host  (e.g. <env_id>.gitpod.environment)
+#   $2 = env_name (tmux session name)
+_oc_ssh() {
+  local host=$1 env_name=$2
+  if command -v cmux &>/dev/null; then
+    cmux ssh-tmux "$host"
+  elif [[ -z "$TMUX" && "$TERM_PROGRAM" == "iTerm.app" ]]; then
+    ssh -t "$host" "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}"
+  else
+    ssh -t "$host" "tmux a -t ${env_name} || tmux new -s ${env_name}"
+  fi
+}
+
 # Connect to an environment via SSH + tmux.
 #   $1 = env_id
 #   $2 = env_name (used for terminal title)
 #   $3 = "retry" to retry up to 5 times (for newly created envs)
 _oc_connect() {
   local env_id=$1 env_name=$2 mode=$3
+  local host="${env_id}.gitpod.environment"
 
   echo -ne "\033]2;ona: ${env_name:-$env_id}\007"
 
   if [[ "$mode" == "retry" ]]; then
     local attempt=0
     while [[ $attempt -lt 5 ]]; do
-      ssh -t "$env_id".gitpod.environment "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}" && break
+      _oc_ssh "$host" "$env_name" && break
       echo "SSH not ready, retrying in 3s... (attempt $((attempt + 1))/5)"
       sleep 3
       ((attempt++))
     done
-
     if [[ $attempt -ge 5 ]]; then
       echo "Failed to connect to environment $env_id"
       echo -ne "\033]2;$(hostname -s)\007"
       return 1
     fi
   else
-    ssh -t "$env_id".gitpod.environment "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}"
+    _oc_ssh "$host" "$env_name"
   fi
 
   echo -ne "\033]2;$(hostname -s)\007"
@@ -86,7 +100,15 @@ oc() {
 
   if [[ -n "$match" ]]; then
     env_id=$(echo "$match" | awk '{print $1}')
-    _oc_connect "$env_id" "$env_name"
+    local phase
+    phase=$(echo "$match" | awk '{print $6}')
+    if [[ "$phase" != "running" ]]; then
+      echo "Starting environment '$env_name'..."
+      gitpod env start --dont-wait "$env_id"
+      _oc_connect "$env_id" "$env_name" retry
+    else
+      _oc_connect "$env_id" "$env_name"
+    fi
   else
     echo "No environment named '$env_name' found."
     read -q "confirm?Create a new one? [y/N] " || { echo; return 0; }
