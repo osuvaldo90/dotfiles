@@ -41,7 +41,7 @@ Dependencies install before their dependents. A dependency that is not supported
 | `tmux` | zsh | `~/.tmux.conf` link, `tmux.zsh` |
 | `git` | zsh | `git.zsh` |
 | `docker` | zsh | `docker.zsh` |
-| `gitpod` | zsh, fzf | `gitpod.zsh` |
+| `ona` | zsh, fzf | `ona.zsh` |
 
 ### What gets installed
 

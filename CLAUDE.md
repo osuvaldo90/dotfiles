@@ -26,13 +26,13 @@ Runs from any location — resolves its own path for symlinks. `-o` installs onl
 | `packages/homebrew/`          | Homebrew setup (macOS only)                                                                               |
 | `packages/zsh/`               | oh-my-zsh, spaceship-prompt, zsh-autosuggestions, `.zshrc` (symlinked to `~/.zshrc`)                      |
 | `packages/jj/`                | jj binary (brew/GitHub release), spaceship-jj, `config.toml` (linked to `~/.config/jj/conf.d/dotfiles.toml`: auto-tracks `main` and `osvi/*`, push prefix `osvi/`), `jj.zsh` aliases and prompt hook |
-| `packages/fzf/`               | fzf binary (brew/apt/dnf/yum); used by `gitpod.zsh`                                                       |
+| `packages/fzf/`               | fzf binary (brew/apt/dnf/yum); used by `ona.zsh`                                                          |
 | `packages/nvm/`               | nvm install and `nvm.zsh` loader                                                                          |
 | `packages/node/`              | Node.js LTS via nvm                                                                                       |
 | `packages/tmux/`              | `.tmux.conf` (symlinked to `~/.tmux.conf`, OSC 52 clipboard passthrough), `tmux.zsh` `yy` clipboard helper |
 | `packages/git/`               | `git.zsh` git aliases and helper functions                                                                |
 | `packages/docker/`            | `docker.zsh` Docker Compose aliases                                                                       |
-| `packages/gitpod/`            | `gitpod.zsh` Gitpod environment management (oc command + completions)                                     |
+| `packages/ona/`               | `ona.zsh` Ona environment management (oc command + completions; cmux workspace gets the env name)       |
 
 ## Key design decisions
 

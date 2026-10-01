@@ -1,12 +1,12 @@
 # ---------------------------------------------------------------------------
-# Gitpod environment management
+# Ona environment management
 #
 # Requires ONA_PROJECT_ID and ONA_CLASS_ID to be set (e.g. in ~/.zshrc.local).
 # ---------------------------------------------------------------------------
 
 # List running environments (skip header line).
 _oc_list() {
-  gitpod env list | tail -n +2
+  ona env list | tail -n +2
 }
 
 # Connect via SSH using the appropriate tmux integration.
@@ -15,6 +15,9 @@ _oc_list() {
 _oc_ssh() {
   local host=$1 env_name=$2
   if command -v cmux &>/dev/null; then
+    # cmux names each mirrored workspace after its tmux session, so create
+    # a session with the env name first.
+    ssh "$host" "tmux has-session -t '=${env_name}' 2>/dev/null || tmux new-session -d -s '${env_name}'" || return 1
     cmux ssh-tmux "$host"
   elif [[ -z "$TMUX" && "$TERM_PROGRAM" == "iTerm.app" ]]; then
     ssh -t "$host" "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}"
@@ -60,7 +63,7 @@ _oc_create() {
   local env_id tmpfile
 
   tmpfile=$(mktemp)
-  gitpod env create "$ONA_PROJECT_ID" \
+  ona env create "$ONA_PROJECT_ID" \
     --class-id="$ONA_CLASS_ID" \
     --name "$env_name" 2>&1 | tee "$tmpfile"
 
@@ -101,10 +104,10 @@ oc() {
   if [[ -n "$match" ]]; then
     env_id=$(echo "$match" | awk '{print $1}')
     local phase
-    phase=$(echo "$match" | awk '{print $6}')
+    phase=$(echo "$match" | awk '{print $NF}')
     if [[ "$phase" != "running" ]]; then
       echo "Starting environment '$env_name'..."
-      gitpod env start --dont-wait "$env_id"
+      ona env start --dont-wait "$env_id"
       _oc_connect "$env_id" "$env_name" retry
     else
       _oc_connect "$env_id" "$env_name"
@@ -121,6 +124,6 @@ oc() {
 _oc_completion() {
   local -a env_names
   env_names=(${(f)"$(_oc_list | awk '{print $2}')"})
-  compadd -X "gitpod environments" -- $env_names
+  compadd -X "ona environments" -- $env_names
 }
 compdef _oc_completion oc
