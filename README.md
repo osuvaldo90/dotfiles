@@ -43,8 +43,6 @@ Dependencies install before their dependents. A dependency that is not supported
 | `docker` | zsh | `docker.zsh` |
 | `gitpod` | zsh, fzf | `gitpod.zsh` |
 
-Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before running. If set, after every other step the installer fetches `~/.zshrc.local` and runs a private `install.sh` from that gist.
-
 ### What gets installed
 
 | Component | macOS | Linux |

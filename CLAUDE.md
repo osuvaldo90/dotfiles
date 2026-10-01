@@ -12,13 +12,13 @@ When a tool is added/removed or a tool configuration is changed you must update 
 ./install.sh [-o <package>]... | [-x <package>]...
 ```
 
-Runs from any location — resolves its own path for symlinks. `-o` installs only the named packages, `-x` installs all except the named packages; they can not be combined. Dependencies are resolved from each package's `package.conf`. `DRY_RUN=1` prints the plan and exits. To bootstrap private/machine-specific config, set `EXTRA_DOTFILES_GIST` to a gist URL before running; the top-level `install.sh` runs that gist bootstrap **last**, after all packages. Claude does not typically need to run this install script unless explicitly asked to.
+Runs from any location — resolves its own path for symlinks. `-o` installs only the named packages, `-x` installs all except the named packages; they can not be combined. Dependencies are resolved from each package's `package.conf`. `DRY_RUN=1` prints the plan and exits. Claude does not typically need to run this install script unless explicitly asked to.
 
 ## Repository structure
 
 | Path                          | Purpose                                                                                                   |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `install.sh`                  | Parses `-o`/`-x`, resolves dependencies, runs each package's `install.sh`, links its `*.zsh` into `~/.config/dotfiles/zsh.d/`; optional `EXTRA_DOTFILES_GIST` step last |
+| `install.sh`                  | Parses `-o`/`-x`, resolves dependencies, runs each package's `install.sh`, links its `*.zsh` into `~/.config/dotfiles/zsh.d/` |
 | `packages/<name>/`            | One installable package. `ls packages` lists them                                                         |
 | `packages/<name>/package.conf`| Zsh-sourceable: `depends=(...)` dependencies, `os=(Darwin ...)` supported `uname -s` values (optional)     |
 | `packages/<name>/install.sh`  | Optional package installer                                                                                |
