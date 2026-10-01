@@ -31,3 +31,13 @@ alias jcmsg="jj commit -m"
 if command -v jj >/dev/null 2>&1; then
   source <(jj util completion zsh)
 fi
+
+# hide git prompt section inside jj repos (jj uses git internally, so both would show)
+_spaceship_jj_toggle_git() {
+  if jj root --quiet >/dev/null 2>&1; then
+    SPACESHIP_GIT_SHOW=false
+  else
+    SPACESHIP_GIT_SHOW=true
+  fi
+}
+precmd_functions=(_spaceship_jj_toggle_git $precmd_functions)

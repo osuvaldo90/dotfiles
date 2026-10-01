@@ -5,10 +5,43 @@ Personal development environment configuration for macOS and Linux. Covers zsh, 
 ## Install
 
 ```sh
-./install.sh
+./install.sh                    # install all packages
+./install.sh -o zsh -o jj       # only zsh and jj (plus dependencies, e.g. homebrew)
+./install.sh -x node -x tmux    # all packages except node and tmux
+DRY_RUN=1 ./install.sh -o node  # print the install plan, do not install
 ```
 
 Run from any location — the script resolves its own path and uses that as the root for all symlinks.
+
+`-o` and `-x` can be used more than once, but not together. Before it installs, the script lists the requested packages and the dependencies it adds. It exits with an error if:
+- a package name is unknown,
+- an excluded package (`-x`) is a dependency of a selected package,
+- a package named with `-o` is not supported on the current OS.
+
+### Packages
+
+Each directory in `packages/` is one package (`ls packages` lists them). A package can contain:
+
+| File | Purpose |
+|---|---|
+| `package.conf` | Zsh-sourceable config. `depends=(a b)` lists dependencies; `os=(Darwin)` limits the package to those `uname -s` values (omit for all OSes) |
+| `install.sh` | Optional. Runs when the package is installed |
+| `*.zsh` | Optional. Linked into `~/.config/dotfiles/zsh.d/`; `.zshrc` sources every file there |
+
+Dependencies install before their dependents. A dependency that is not supported on the current OS is skipped (e.g. `homebrew` on Linux).
+
+| Package | Depends on | Installs |
+|---|---|---|
+| `homebrew` | — (macOS only) | Homebrew |
+| `zsh` | — | oh-my-zsh, spaceship-prompt, zsh-autosuggestions, `~/.zshrc` link |
+| `jj` | homebrew, zsh | jj, spaceship-jj, jj config link, `jj.zsh` |
+| `fzf` | homebrew | fzf |
+| `nvm` | zsh | nvm, `nvm.zsh` (loads nvm) |
+| `node` | nvm | Node.js LTS (default) |
+| `tmux` | zsh | `~/.tmux.conf` link, `tmux.zsh` |
+| `git` | zsh | `git.zsh` |
+| `docker` | zsh | `docker.zsh` |
+| `gitpod` | zsh, fzf | `gitpod.zsh` |
 
 Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before running. If set, after every other step the installer fetches `~/.zshrc.local` and runs a private `install.sh` from that gist.
 
@@ -29,9 +62,10 @@ Symlinks created:
 
 | Source | Destination |
 |---|---|
-| `zsh/.zshrc` | `~/.zshrc` |
-| `tmux/.tmux.conf` | `~/.tmux.conf` |
-| `jujutsu/config.toml` | `~/.config/jj/conf.d/dotfiles.toml` |
+| `packages/zsh/.zshrc` | `~/.zshrc` |
+| `packages/tmux/.tmux.conf` | `~/.tmux.conf` |
+| `packages/jj/config.toml` | `~/.config/jj/conf.d/dotfiles.toml` |
+| `packages/<name>/*.zsh` | `~/.config/dotfiles/zsh.d/` |
 
 Existing files at those destinations are backed up with a timestamp suffix before the symlink is created.
 
@@ -47,16 +81,16 @@ The main entry point. Loads oh-my-zsh with the spaceship theme and the following
 - `gh` — GitHub CLI completions
 - `encode64` — `encode64` / `decode64` helpers
 - `zsh-autosuggestions` — inline suggestions as you type
-- `spaceship-jj` — jujutsu prompt section for spaceship
+- `spaceship-jj` — jujutsu prompt section for spaceship (only when the `jj` package installed it)
 
-After oh-my-zsh, it sources per-tool zsh files from their respective top-level directories (e.g., `git/git.zsh`, `docker/docker.zsh`). Finally, it sources `~/.zshrc.local` if present, for machine-specific config.
+After oh-my-zsh, it sources every file in `~/.config/dotfiles/zsh.d/` (the `*.zsh` files of installed packages). Finally, it sources `~/.zshrc.local` if present, for machine-specific config.
 
 Inline config in `.zshrc`:
-- **Spaceship prompt layout**: `user dir host jj git exec_time line_sep exit_code char` — in jj repos the git section is automatically hidden via a `precmd` hook
+- **Spaceship prompt layout**: `user dir host jj git exec_time line_sep exit_code char` — the `jj` section shows only when spaceship-jj is installed; in jj repos `jj.zsh` hides the git section via a `precmd` hook
 - **zsh-autosuggestions strategy**: `match_prev_cmd` → `completion` → `history`
 - **Less**: `LESS="-FR"` — quit if output fits one screen, pass through raw control characters
 
-### `git/git.zsh`
+### `packages/git/git.zsh`
 
 #### Core shortcuts
 
@@ -114,7 +148,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 
 **`gsts [stash-ref]`** — Show the full diff of a stash entry, including tracked changes and untracked file snapshot (`^3`).
 
-### `jujutsu/jujutsu.zsh`
+### `packages/jj/jj.zsh`
 
 [Jujutsu](https://github.com/jj-vcs/jj) is a Git-compatible VCS. Shell completions are loaded automatically when `jj` is on `$PATH`.
 
@@ -136,7 +170,7 @@ Functions for git operations that stash, do something, and unstash — keeping t
 | `jrbam` | `jj rebase -b 'heads(mutable() ~ (empty() & description("")))' -o main` | Rebase all mutable heads onto main, excluding empty changes with no description |
 | `jcmsg` | `jj commit -m` | Commit working copy with an inline message |
 
-### `jujutsu/config.toml`
+### `packages/jj/config.toml`
 
 Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also creates an empty `~/.config/jj/config.toml` so that `jj config set --user` writes there instead of overwriting the dotfiles-managed file.
 
@@ -146,7 +180,7 @@ Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also c
 | `remotes.origin.auto-track-bookmarks` | `main\|osvi/*` | Only auto-track `main` and `osvi/` prefixed remote bookmarks |
 | `templates.git_push_bookmark` | `osvi/push-<short-change-id>` | Auto-name push bookmarks with `osvi/` prefix |
 
-### `docker/docker.zsh`
+### `packages/docker/docker.zsh`
 
 | Alias | Command |
 |---|---|
@@ -167,7 +201,7 @@ Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also c
 
 ## Tmux
 
-`tmux/.tmux.conf` is a small config focused on SSH + clipboard integration.
+`packages/tmux/.tmux.conf` is a small config focused on SSH + clipboard integration.
 
 **`allow-passthrough on`**
 Lets tmux forward OSC 52 escape sequences from panes to the outer terminal. This lets clipboard writes reach the macOS clipboard over SSH — the sequence travels: app → tmux pane → tmux passthrough → terminal emulator → macOS clipboard.
@@ -178,7 +212,7 @@ Tells tmux that the terminal supports the clipboard OSC sequence, so tmux's own 
 **`focus-events on`**
 Forwards focus-in/focus-out escape sequences to applications inside tmux. This lets apps (e.g. editors) react when you switch back to the terminal.
 
-### `tmux/tmux.zsh` — Shell clipboard helper
+### `packages/tmux/tmux.zsh` — Shell clipboard helper
 
 | Function | Description |
 |---|---|
