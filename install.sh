@@ -6,21 +6,16 @@ script_dir=$(dirname "$(readlink -f "$0")")
 echo "script_dir=$script_dir"
 
 # --------------------------
-# macOS (homebrew)
+# Homebrew (macOS)
 # --------------------------
 if [[ "$(uname)" == "Darwin" ]]; then
-  "$script_dir/macos/install.sh"
+  "$script_dir/homebrew/install.sh"
 fi
 
 # --------------------------
 # Zsh (oh-my-zsh, spaceship, autosuggestions, .zshrc link)
 # --------------------------
 "$script_dir/zsh/install.sh"
-
-# --------------------------
-# Git Town install (skip if present)
-# --------------------------
-"$script_dir/git-town/install.sh"
 
 # --------------------------
 # Jujutsu (jj)
@@ -33,9 +28,9 @@ fi
 # "$script_dir/node/install.sh"
 
 # --------------------------
-# Neovim (prerequisites + install + config)
+# fzf
 # --------------------------
-"$script_dir/neovim/install.sh"
+"$script_dir/fzf/install.sh"
 
 # --------------------------
 # Link $HOME/.tmux.conf to ./tmux/.tmux.conf

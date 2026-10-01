@@ -1,6 +1,6 @@
 # dotfiles
 
-Personal development environment configuration for macOS and Linux. Covers zsh, tmux, and Neovim.
+Personal development environment configuration for macOS and Linux. Covers zsh, tmux, jujutsu, and shell helpers.
 
 ## Install
 
@@ -19,19 +19,11 @@ Optionally, set `EXTRA_DOTFILES_GIST` to a URL pointing to a private gist before
 | oh-my-zsh | curl installer | curl installer |
 | spaceship-prompt | git clone | git clone |
 | zsh-autosuggestions | git clone | git clone |
-| git-town | curl installer | curl installer |
 | jujutsu (jj) | `brew install jj` | GitHub release tarball |
 | spaceship-jj | git clone | git clone |
-| Neovim | `brew install neovim` | GitHub release tarball → `/opt` |
-| ripgrep | `brew install` | apt/dnf/yum |
-| fd | `brew install` | apt/dnf/yum |
 | fzf | `brew install` | apt/dnf/yum |
-| lazygit | `brew install` | GitHub release tarball |
 | nvm | curl installer | curl installer |
 | Node.js (LTS) | nvm | nvm |
-| tree-sitter-cli | `npm install -g` | `npm install -g` |
-
-Build tools (Xcode CLT on macOS, `build-essential`/`gcc` on Linux) are installed automatically so tree-sitter parsers can compile.
 
 Symlinks created:
 
@@ -39,32 +31,9 @@ Symlinks created:
 |---|---|
 | `zsh/.zshrc` | `~/.zshrc` |
 | `tmux/.tmux.conf` | `~/.tmux.conf` |
-| `neovim/config/` | `~/.config/nvim/` |
 | `jujutsu/config.toml` | `~/.config/jj/conf.d/dotfiles.toml` |
 
 Existing files at those destinations are backed up with a timestamp suffix before the symlink is created.
-
----
-
-## Testing
-
-The install script can be tested end-to-end inside a Docker container without touching the host machine.
-
-```sh
-./test.sh
-```
-
-This builds an Ubuntu image (`Dockerfile`) with the minimal bootstrap prerequisites (git, curl, zsh, sudo), mounts the local repo into the container, runs `install.sh`, and then runs `test-verify.sh` to check every installed component.
-
-`test-verify.sh` checks:
-- oh-my-zsh directory, spaceship symlink, zsh-autosuggestions directory
-- git-town binary and its four global git config values
-- jujutsu (jj) binary
-- nvm, node, npm versions and the `lts/*` default alias
-- ripgrep, fd, fzf, lazygit, tree-sitter-cli binaries
-- `~/.tmux.conf`, `~/.zshrc`, `~/.config/nvim` symlinks
-
-Docker layer caching makes repeat runs fast — only the `docker run` step re-executes on subsequent calls.
 
 ---
 
@@ -85,7 +54,6 @@ After oh-my-zsh, it sources per-tool zsh files from their respective top-level d
 Inline config in `.zshrc`:
 - **Spaceship prompt layout**: `user dir host jj git exec_time line_sep exit_code char` — in jj repos the git section is automatically hidden via a `precmd` hook
 - **zsh-autosuggestions strategy**: `match_prev_cmd` → `completion` → `history`
-- **Editor**: `EDITOR` and `VISUAL` set to `nvim`
 - **Less**: `LESS="-FR"` — quit if output fits one screen, pass through raw control characters
 
 ### `git/git.zsh`
@@ -146,29 +114,6 @@ Functions for git operations that stash, do something, and unstash — keeping t
 
 **`gsts [stash-ref]`** — Show the full diff of a stash entry, including tracked changes and untracked file snapshot (`^3`).
 
-### `git-town/git-town.zsh`
-
-[git-town](https://www.git-town.com/) manages branch stacks and syncing. Configured with:
-- Main branch: `main`
-- GitHub connector: `gh`
-- Sync strategy: rebase
-- Tags: not synced
-
-| Alias | Command | Description |
-|---|---|---|
-| `gt` | `git town` | Base command |
-| `gs` | `git town sync --no-push` | Sync current branch (no push) |
-| `gsr` | `git town sync` | Sync and push |
-| `gsa` | `git town sync --all --no-push` | Sync all branches |
-| `gsar` | `git town sync --all` | Sync all branches and push |
-| `ft` | `git town hack` | Create a new feature branch |
-| `pr` | `git town propose` | Open a PR for the current branch |
-| `ap` | `git town append` | Append a child branch |
-| `sw` | `git town switch` | Interactively switch branches |
-| `gtc` | `git town continue` | Continue after resolving conflicts |
-| `gts` | `git town skip` | Skip a conflicting sync step |
-| `gtb` | `git town branch` | Show branch lineage |
-
 ### `jujutsu/jujutsu.zsh`
 
 [Jujutsu](https://github.com/jj-vcs/jj) is a Git-compatible VCS. Shell completions are loaded automatically when `jj` is on `$PATH`.
@@ -225,13 +170,13 @@ Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also c
 `tmux/.tmux.conf` is a small config focused on SSH + clipboard integration.
 
 **`allow-passthrough on`**
-Lets tmux forward OSC 52 escape sequences from panes to the outer terminal. This is what enables Neovim's yank to reach the macOS clipboard when editing over SSH — the sequence travels: Neovim → tmux pane → tmux passthrough → terminal emulator → macOS clipboard.
+Lets tmux forward OSC 52 escape sequences from panes to the outer terminal. This lets clipboard writes reach the macOS clipboard over SSH — the sequence travels: app → tmux pane → tmux passthrough → terminal emulator → macOS clipboard.
 
 **`set-clipboard on`**
 Tells tmux that the terminal supports the clipboard OSC sequence, so tmux's own clipboard operations also use it.
 
 **`focus-events on`**
-Forwards focus-in/focus-out escape sequences to applications inside tmux. This lets Neovim's `FocusGained`/`FocusLost` autocommands fire correctly so buffers auto-reload when you switch back to the terminal.
+Forwards focus-in/focus-out escape sequences to applications inside tmux. This lets apps (e.g. editors) react when you switch back to the terminal.
 
 ### `tmux/tmux.zsh` — Shell clipboard helper
 
@@ -247,77 +192,3 @@ cat some-file.txt | yy
 git diff | yy
 ```
 
----
-
-## Neovim
-
-Built on [LazyVim](https://www.lazyvim.org/) with a small set of overrides and additions.
-
-### LazyVim extras enabled (`lazyvim.json`)
-
-| Extra | What it adds |
-|---|---|
-| `ai.claudecode` | Claude Code integration (see below) |
-| `ai.copilot` | GitHub Copilot completions |
-| `coding.mini-surround` | Add/delete/replace surroundings (brackets, quotes, etc.) |
-| `formatting.prettier` | Prettier as the formatter for JS/TS/CSS/JSON/etc |
-| `lang.typescript` | TypeScript LSP, treesitter, and tooling |
-| `linting.eslint` | ESLint via `nvim-lint` |
-
-### Plugin customizations (`lua/plugins/`)
-
-**`bufferline.lua`**
-Sets `always_show_bufferline = true` so the buffer tab bar is visible even with a single buffer open.
-
-**`claudecode.lua`**
-Configures [claudecode.nvim](https://github.com/coder/claudecode.nvim) to launch Claude Code with `--permission-mode auto`. Also adds a `WinEnter` autocmd that redraws terminal windows to fix cursor misalignment caused by TUI apps.
-
-**`colorscheme.lua`**
-Installs [zenbones.nvim](https://github.com/zenbones-theme/zenbones.nvim) (with Lush dependency) and sets the `nordbones` colorscheme.
-
-**`formatting.lua`**
-Configures [conform.nvim](https://github.com/stevearc/conform.nvim) with a priority-ordered formatter chain for JS/TS/CSS/JSON/GraphQL files:
-1. **oxfmt** — active when `.oxfmtrc.json` or `.oxfmtrc.jsonc` is found. Resolves binary from local `node_modules`, global `$PATH`, or `npx` fallback.
-2. **biome** — active when `biome.json` or `biome.jsonc` is found.
-3. **prettier** — fallback, provided by the LazyVim formatting extra.
-
-**`graphql.lua`**
-Adds GraphQL support: ensures the treesitter `graphql` parser is installed and configures the GraphQL language server (requires `graphql-language-service-cli` and a `.graphqlrc.yml` or `graphql.config.ts` in the project root).
-
-**`lualine.lua`**
-Replaces the default LazyVim status line path component with a non-truncating version that shows the path relative to the current working directory.
-
-**`scrollbar.lua`**
-Configures [satellite.nvim](https://github.com/lewis6991/satellite.nvim) to show a scrollbar with cursor position, diagnostics, and gitsigns indicators.
-
-**`snacks.lua`**
-Placeholder for [snacks.nvim](https://github.com/folke/snacks.nvim) picker overrides. Hidden/ignored file search is currently disabled (defaults to LazyVim behavior).
-
-**`treesitter-context.lua`**
-Enables [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) with up to 13 context lines pinned at the top of the window.
-
-**`typescript.lua`**
-Auto-selects the TypeScript language server based on what's available in the project:
-- If `tsgo` is on `$PATH` or in `node_modules/.bin/`, use `tsgo` (the faster Go-based TS server).
-- Otherwise, fall back to `vtsls`.
-
-Also disables LSP inlay hints globally (LazyVim's default is `enabled = true`) since the TypeScript servers now ship hint settings by default and the inline type annotations are distracting.
-
-
-### `lua/config/keymaps.lua` — Custom keymaps
-
-| Key | Mode | Description |
-|---|---|---|
-| `<leader>gc` | n, v | Copy GitHub URL of current file/selection to clipboard (uses commit hash, works with jj) |
-| `<leader>bc` | n | Copy buffer relative path to clipboard |
-| `<M-BS>` | i | Delete word backward (Alt+Backspace) |
-| `<leader>bw` | n | Toggle line wrapping |
-| `<leader>fG` | n | Find git changed files via Snacks picker |
-
-### `lua/config/autocmds.lua` — Custom autocmds
-
-- **Prose wrapping**: Sets `wrap`, `linebreak`, and `textwidth=100` for markdown, text, log, and gitcommit files.
-
-### `lua/config/options.lua` — SSH clipboard
-
-When Neovim detects it's running over SSH (`$SSH_TTY` is set), LazyVim normally disables clipboard integration. This override enables it by configuring the clipboard to use the OSC 52 provider, which encodes clipboard content in an escape sequence and sends it to the terminal. Combined with `allow-passthrough on` in tmux, yanks reach the macOS clipboard even in deeply nested SSH+tmux sessions.

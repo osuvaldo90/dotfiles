@@ -21,15 +21,12 @@ _spaceship_jj_toggle_git() {
 }
 precmd_functions=(_spaceship_jj_toggle_git $precmd_functions)
 
-export EDITOR=nvim
-export VISUAL=nvim
 export LESS="-FR"
 
 # source per-tool zsh config
 ZSHRC="$HOME/.zshrc"
 dotfiles_dir=$(dirname "$(dirname "$(readlink -f "$ZSHRC")")")
 source "$dotfiles_dir/git/git.zsh"
-source "$dotfiles_dir/git-town/git-town.zsh"
 source "$dotfiles_dir/docker/docker.zsh"
 source "$dotfiles_dir/gitpod/gitpod.zsh"
 source "$dotfiles_dir/jujutsu/jujutsu.zsh"
