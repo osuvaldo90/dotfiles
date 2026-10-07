@@ -2,12 +2,27 @@
 # Ona environment management
 #
 # Requires ONA_PROJECT_ID and ONA_CLASS_ID to be set (e.g. in ~/.zshrc.local).
+# Optional: ONA_IDLE_TIMEOUT (seconds, default 3600) for the cmux idle reaper.
 # ---------------------------------------------------------------------------
 
 # List running environments (skip header line).
 _oc_list() {
   ona env list | tail -n +2
 }
+
+# Remote reaper: detaches tmux clients with no input for $1 seconds, checking
+# every $2 seconds. Program output does not count as input. Stops when the
+# tmux server exits.
+read -r -d '' _OC_REAPER <<'EOF'
+timeout=$1 interval=$2
+while sleep "$interval"; do
+  now=$(date +%s)
+  clients=$(tmux list-clients -F '#{client_tty} #{client_activity}') || break
+  echo "$clients" | while read -r c a; do
+    [ -n "$c" ] && [ $((now - a)) -gt "$timeout" ] && tmux detach-client -t "$c"
+  done
+done
+EOF
 
 # Connect via SSH using the appropriate tmux integration.
 #   $1 = host  (e.g. <env_id>.gitpod.environment)
@@ -16,8 +31,12 @@ _oc_ssh() {
   local host=$1 env_name=$2
   if command -v cmux &>/dev/null; then
     # cmux names each mirrored workspace after its tmux session, so create
-    # a session with the env name first.
-    ssh "$host" "tmux has-session -t '=${env_name}' 2>/dev/null || tmux new-session -d -s '${env_name}'" || return 1
+    # a session with the env name first. Then start the idle reaper once per
+    # tmux server; the @oc_reaper option guards against duplicates.
+    ssh "$host" "f=/tmp/oc-reaper.sh; cat > \$f.tmp && mv \$f.tmp \$f
+      tmux has-session -t '=${env_name}' 2>/dev/null || tmux new-session -d -s '${env_name}'
+      tmux if -F '#{@oc_reaper}' '' \"set -g @oc_reaper 1 ; run-shell -b 'sh \$f ${ONA_IDLE_TIMEOUT:-3600} 300'\"" \
+      <<< "$_OC_REAPER" || return 1
     cmux ssh-tmux "$host"
   elif [[ -z "$TMUX" && "$TERM_PROGRAM" == "iTerm.app" ]]; then
     ssh -t "$host" "tmux -CC a -t ${env_name} || tmux -CC new -s ${env_name}"
