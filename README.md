@@ -182,12 +182,14 @@ Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also c
 
 | Command | Description |
 |---|---|
-| `oc` | Pick a running Ona environment with fzf and connect over SSH + tmux |
+| `oc` | Pick an Ona environment with fzf and connect over SSH + tmux |
 | `oc <name>` | Connect to the named environment (start it if stopped), or offer to create it |
 
 With cmux, `oc` opens the env through `cmux ssh-tmux` and names the workspace after the env. It also starts an idle reaper on the remote tmux server, once per server: every 300 s it detaches clients with no key input for `ONA_IDLE_TIMEOUT` seconds (default 3600). Program output does not count as input. The detach closes the SSH connection, so Ona can stop the env when its own inactivity timeout ends. Sessions and their processes stay.
 
-Requires `ONA_PROJECT_ID` and `ONA_CLASS_ID` (e.g. in `~/.zshrc.local`); `ONA_IDLE_TIMEOUT` is optional.
+`oc` and its completion skip archived environments.
+
+Requires `jq`, `ONA_PROJECT_ID` and `ONA_CLASS_ID` (e.g. in `~/.zshrc.local`); `ONA_IDLE_TIMEOUT` is optional.
 
 ### `packages/docker/docker.zsh`
 

@@ -5,9 +5,16 @@
 # Optional: ONA_IDLE_TIMEOUT (seconds, default 3600) for the cmux idle reaper.
 # ---------------------------------------------------------------------------
 
-# List running environments (skip header line).
+# List environments that are not archived, one per line:
+#   <id> <name> <repository> <branch> <phase>
+# Empty fields print as "-" so the columns stay fixed.
 _oc_list() {
-  ona env list | tail -n +2
+  ona env list -o json | jq -r '.[]
+    | select(.metadata.archivedAt == null)
+    | [.id, .metadata.name, .status.content.git.cloneUrl, .status.content.git.branch,
+       (.status.phase // "" | sub("^ENVIRONMENT_PHASE_"; "") | ascii_downcase)]
+    | map(if . == null or . == "" then "-" else . end)
+    | @tsv' | column -t
 }
 
 # Remote reaper: detaches tmux clients with no input for $1 seconds, checking
