@@ -146,10 +146,22 @@ oc() {
   fi
 }
 
-# Zsh completion: complete env names for oc.
+# Open an environment in VS Code. Starts it if it is not running.
+#   ocode          - fuzzy-select from existing environments
+#   ocode <name>   - open the named environment
+ocode() {
+  local env=$1
+  if [[ -z "$env" ]]; then
+    env=$(_oc_list | fzf --prompt="Open in VS Code: " --height=10 --reverse | awk '{print $1}')
+    [[ -z "$env" ]] && return 0
+  fi
+  ona env open "$env" --editor vscode --start
+}
+
+# Zsh completion: complete env names for oc and ocode.
 _oc_completion() {
   local -a env_names
   env_names=(${(f)"$(_oc_list | awk '{print $2}')"})
   compadd -X "ona environments" -- $env_names
 }
-compdef _oc_completion oc
+compdef _oc_completion oc ocode
