@@ -187,7 +187,7 @@ Shared jj configuration linked into `~/.config/jj/conf.d/`. The installer also c
 | `ocode` | Pick an Ona environment with fzf and open it in VS Code (start it if stopped) |
 | `ocode <name>` | Open the named environment in VS Code (start it if stopped) |
 
-With cmux, `oc` opens the env through `cmux ssh-tmux` and names the workspace after the env. It also starts an idle reaper on the remote tmux server, once per server: every 300 s it detaches clients with no key input for `ONA_IDLE_TIMEOUT` seconds (default 3600). Program output does not count as input. The detach closes the SSH connection, so Ona can stop the env when its own inactivity timeout ends. Sessions and their processes stay.
+With cmux, `oc` opens the env through `cmux ssh-tmux` and names the workspace after the env. It also starts an idle reaper on the remote tmux server, once per server: every 300 s it detaches clients with no key input for `ONA_IDLE_TIMEOUT` seconds (default 3600). The last input time is the newest access time of the pane terminals in the client's session, because `client_activity` does not change for cmux control-mode clients. Program output does not count as input. The detach closes the SSH connection, so Ona can stop the env when its own inactivity timeout ends. Sessions and their processes stay.
 
 `oc`, `ocode` and their completion skip archived environments.
 

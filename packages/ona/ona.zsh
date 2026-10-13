@@ -19,14 +19,18 @@ _oc_list() {
 
 # Remote reaper: detaches tmux clients with no input for $1 seconds, checking
 # every $2 seconds. Program output does not count as input. Stops when the
-# tmux server exits.
+# tmux server exits. Input time is the newest access time of the pane ttys in
+# the client's session: client_activity does not change for control-mode
+# clients (cmux), because their keys arrive as commands.
 read -r -d '' _OC_REAPER <<'EOF'
 timeout=$1 interval=$2
 while sleep "$interval"; do
   now=$(date +%s)
-  clients=$(tmux list-clients -F '#{client_tty} #{client_activity}') || break
-  echo "$clients" | while read -r c a; do
-    [ -n "$c" ] && [ $((now - a)) -gt "$timeout" ] && tmux detach-client -t "$c"
+  clients=$(tmux list-clients -F '#{client_tty} #{client_session}') || break
+  echo "$clients" | while read -r c s; do
+    [ -n "$c" ] || continue
+    a=$(tmux list-panes -s -t "=$s" -F '#{pane_tty}' | xargs -r stat -c %X 2>/dev/null | sort -n | tail -1)
+    [ -n "$a" ] && [ $((now - a)) -gt "$timeout" ] && tmux detach-client -t "$c"
   done
 done
 EOF
