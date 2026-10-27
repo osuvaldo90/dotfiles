@@ -9,7 +9,7 @@
 #   <id> <name> <repository> <branch> <phase>
 # Empty fields print as "-" so the columns stay fixed.
 _oc_list() {
-  ona env list -o json | jq -r '.[]
+  ona env list -o json 2>/dev/null | jq -r '.[]
     | select(.metadata.archivedAt == null)
     | [.id, .metadata.name, .status.content.git.cloneUrl, .status.content.git.branch,
        (.status.phase // "" | sub("^ENVIRONMENT_PHASE_"; "") | ascii_downcase)]
@@ -165,7 +165,7 @@ ocode() {
 # Zsh completion: complete env names for oc and ocode.
 _oc_completion() {
   local -a env_names
-  env_names=(${(f)"$(_oc_list 2>/dev/null | awk '{print $2}')"})
+  env_names=(${(f)"$(_oc_list | awk '{print $2}')"})
   compadd -X "ona environments" -- $env_names
 }
 compdef _oc_completion oc ocode
