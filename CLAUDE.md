@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 When a tool is added/removed or a tool configuration is changed you must update the README.md file.
 
+## After a change that reaches Ona
+
+Ona environments install this repo through the dotfiles-vanta repo (`../dotfiles-vanta`, github.com/osuvaldo90/dotfiles-vanta): its `install.sh` runs `install.sh -o zsh -o jj -o tmux -o git -o docker` here, and its `post-start-setup.sh` runs `packages/claude/install.sh`. When a change touches `install.sh`, `lib/`, or one of the packages `zsh`, `jj`, `tmux`, `git`, `docker`, or `claude`, commit and push it to `main`, then run `../dotfiles-vanta/ona-update.sh` from the Mac. It starts stopped environments, pulls and re-installs in every environment, and stops the ones it started. Report any environment it could not update. Changes to the other packages (`homebrew`, `fzf`, `nvm`, `node`, `ona`) do not reach Ona and do not need this.
+
 ## Installation
 
 ```sh
