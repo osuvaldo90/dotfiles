@@ -33,6 +33,8 @@ Runs from any location — resolves its own path for symlinks. `-o` installs onl
 | `packages/git/`               | `git.zsh` git aliases and helper functions                                                                |
 | `packages/docker/`            | `docker.zsh` Docker Compose aliases                                                                       |
 | `packages/ona/`               | `ona.zsh` Ona environment management (oc command + completions; cmux workspace gets the env name)       |
+| `packages/claude/`            | Claude Code config: `CLAUDE.md` (linked to `~/.claude/CLAUDE.md`), `output-styles/*` and `skills/*` (one link each into `~/.claude/`). Another repo may link its own `CLAUDE.md` over this one |
+| `lib/link.zsh`                | `link_with_backup <src> <dest>`: idempotent symlink with timestamped backup. Use it for links to real files that may hold data |
 
 ## Key design decisions
 

@@ -42,6 +42,7 @@ Dependencies install before their dependents. A dependency that is not supported
 | `git` | zsh | `git.zsh` |
 | `docker` | zsh | `docker.zsh` |
 | `ona` | zsh, fzf | `ona.zsh` |
+| `claude` | — | `~/.claude/CLAUDE.md` link, output style and skill links |
 
 ### What gets installed
 
@@ -64,8 +65,11 @@ Symlinks created:
 | `packages/tmux/.tmux.conf` | `~/.tmux.conf` |
 | `packages/jj/config.toml` | `~/.config/jj/conf.d/dotfiles.toml` |
 | `packages/<name>/*.zsh` | `~/.config/dotfiles/zsh.d/` |
+| `packages/claude/CLAUDE.md` | `~/.claude/CLAUDE.md` |
+| `packages/claude/output-styles/*` | `~/.claude/output-styles/<name>` |
+| `packages/claude/skills/*` | `~/.claude/skills/<name>` |
 
-Existing files at those destinations are backed up with a timestamp suffix before the symlink is created.
+Existing files at those destinations are backed up with a timestamp suffix before the symlink is created. The `claude` package does this with `link_with_backup` from `lib/link.zsh`: a correct link is left as is, a link to another path is replaced with no backup, and a real file or directory is moved to `<dest>.backup.<timestamp>` first.
 
 ---
 
@@ -239,3 +243,16 @@ cat some-file.txt | yy
 git diff | yy
 ```
 
+---
+
+## Claude
+
+`packages/claude/` holds Claude Code config and links it into `~/.claude/`. The links are one per item, so output styles and skills that live only in `~/.claude/` or that another repo owns stay in place.
+
+| Item | Content |
+|---|---|
+| `CLAUDE.md` | User-level instructions: use jj instead of git, leave an empty working copy, refer to commits by change ID |
+| `output-styles/ste.md` | `STE` output style (Simplified Technical English) |
+| `skills/jj-resolve-conflicts/` | Skill for resolving jj rebase conflicts |
+
+Another dotfiles repo can link its own `CLAUDE.md` over this package's link after this package installs. The Vanta repo does this; its file is a superset of this one.
